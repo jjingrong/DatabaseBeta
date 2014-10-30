@@ -1,0 +1,1 @@
+Adding modal view for ‘book now’ button
