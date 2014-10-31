@@ -91,22 +91,22 @@
 												</header>
 												
 												<span class="image featured"><img src="images/pic08.jpg" alt="" /></span>
-												
+												<?php
+												$servername = "localhost";
+												$username = "admin";
+												$password = "";
+
+												// Create connection
+												$conn = new mysqli($servername, $username, $password);
+
+												// Check connection
+												if ($conn->connect_error) {
+												    die("Connection failed: " . $conn->connect_error);
+												} 
+												echo "RJYFlightDB successfully";
+												?>
 												<p>Placeholder text. Put searchbar blah <br>
-													<?php
-													$servername = "localhost";
-													$username = "admin";
-													$password = "";
-
-													// Create connection
-													$conn = new mysqli($servername, $username, $password);
-
-													// Check connection
-													if ($conn->connect_error) {
-													    die("Connection failed: " . $conn->connect_error);
-													} 
-													echo "RJYFlightDB successfully";
-													?>
+													
 
 												Aliquam luctus et mattis lectus sit amet pulvinar. Nam turpis nisi 
 												consequat etiam lorem ipsum dolor sit amet nullam. Phasellus quam turpis, 
