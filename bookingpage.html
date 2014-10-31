@@ -23,6 +23,11 @@
 		</noscript>
 		<!--[if lte IE 8]><link rel="stylesheet" href="css/ie/v8.css" /><![endif]-->
 		<!--[if lte IE 9]><link rel="stylesheet" href="css/ie/v9.css" /><![endif]-->
+		<!-- Demo Styles -->
+		<link href="css/demo.css" rel="stylesheet">
+
+		<!-- Modal Styles -->
+		<link href="css/modal.css" rel="stylesheet">
 	</head>
 	<body class="left-sidebar">
 
@@ -170,32 +175,35 @@
 									
 											<article>
 												<header class="major">
-													<h2>Left Sidebar</h2>
-													<p>Which means the sidebar is on the left</p>
+													<h2>Options to choose from</h2>
+													<p>Forms</p>
 												</header>
-												<p>random placeholder image</p>
-												<span class="image featured"><img src="images/pic08.jpg" alt="" /></span>
-												<!-- Date attempt -->
-												<p><h3>Date</h3></p>
-												<?php
-													  $myCalendar = new tc_calendar("date1", true);
-													  $myCalendar->setIcon("calendar/images/iconCalendar.gif");
-													  $myCalendar->setDate(01, 03, 1960);
-													  $myCalendar->setPath("calendar/");
-													  $myCalendar->setYearInterval(1960, 2015);
-													  $myCalendar->dateAllow('1960-01-01', '2015-03-01');
-													  $myCalendar->setSpecificDate(array("2011-04-01", "2011-04-13", "2011-04-25"), 0, 'month');
-													  $myCalendar->setOnChange("myChanged('test')");
-													  $myCalendar->writeScript();
-													  ?>
+												
+												<!-- Modal attempt -->
+												<div class="container">
+													<input type="text" name="name" id="name" placeholder="Name"/><br>
+													<input type="text" name="blahblah" id="blahblah" placeholder="blahblah"  /><br>
+													<input type="text" name="email" id="email" placeholder="Email"/><br>
+													<input type="test" name="destination" id="destination" placeholder="Destination" />
+													<a href="#modal" class="btn go">Book now</a>
+													</div>
 
-												<script language="javascript">
-												<!--
-												function myChanged(v){
-													alert("Hello, value has been changed : "+document.getElementById("date1").value+"["+v+"]");
-												}
-												//-->
-												</script>
+													<div id="modal">
+														<div class="modal-content">
+															<div class="header">
+																<h2>Booking details</h2>
+															</div>
+															<div class="copy">
+																<p>Confirmation details.</p>
+															</div>
+															<div class="cf footer">
+																<a href="#" class="btn">Confirm</a>
+															</div>
+														</div>
+														<div class="overlay"></div>
+													</div>
+
+
 
 
 												<!-- Table function -->
