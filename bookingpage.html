@@ -6,7 +6,7 @@
 -->
 <html>
 	<head>
-		<title>Left Sidebar - CS2102 - Group 72 Project Demo</title>
+		<title>Booking Page - CS2102 - Group 72 Project Demo</title>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="description" content="" />
 		<meta name="keywords" content="" />
@@ -56,7 +56,18 @@
 	            targetTable.rows.item(rowIndex).style.display = 'table-row';
 	    }
 	}
-	</script>		
+	</script>	
+
+	<!-- date -->
+	<script src="jquery-1.6.2.min.js"></script>
+	<script src="jquery-ui-1.8.15.custom.min.js"></script>
+	<link rel="stylesheet" href="jquery/jqueryCalendar.css">
+	<script>
+	                jQuery(function() {
+	                                jQuery( "#inf_custom_someDateField" ).datepicker();
+	                });
+	</script>
+
 
 		<!-- Header Wrapper -->
 			<div id="header-wrapper">
@@ -164,6 +175,28 @@
 												</header>
 												<p>random placeholder image</p>
 												<span class="image featured"><img src="images/pic08.jpg" alt="" /></span>
+												<!-- Date attempt -->
+												<p><h3>Date</h3></p>
+												<?php
+													  $myCalendar = new tc_calendar("date1", true);
+													  $myCalendar->setIcon("calendar/images/iconCalendar.gif");
+													  $myCalendar->setDate(01, 03, 1960);
+													  $myCalendar->setPath("calendar/");
+													  $myCalendar->setYearInterval(1960, 2015);
+													  $myCalendar->dateAllow('1960-01-01', '2015-03-01');
+													  $myCalendar->setSpecificDate(array("2011-04-01", "2011-04-13", "2011-04-25"), 0, 'month');
+													  $myCalendar->setOnChange("myChanged('test')");
+													  $myCalendar->writeScript();
+													  ?>
+
+												<script language="javascript">
+												<!--
+												function myChanged(v){
+													alert("Hello, value has been changed : "+document.getElementById("date1").value+"["+v+"]");
+												}
+												//-->
+												</script>
+
 
 												<!-- Table function -->
 												<p><h3>Placerholder Table search function </h3></p>
