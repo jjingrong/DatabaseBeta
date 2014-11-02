@@ -9,6 +9,6 @@ $link = mysql_connect($servername, $username, $password, $dbname);
 if (!$link) {
     die('Could not connect: ' . mysql_connect_error());
 }
-echo 'Connected successfully';
+//echo 'Connected successfully';
 
 ?>
