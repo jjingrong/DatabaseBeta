@@ -241,8 +241,7 @@ CREATE TABLE `seatstype` (
   `price` decimal(10,0) DEFAULT NULL,
   `seatCount` decimal(10,0) DEFAULT NULL,
   PRIMARY KEY (`classType`,`IATACode`,`FlightNo`,`DepartureTime`),
-  KEY `IATACode` (`IATACode`,`FlightNo`,`DepartureTime`),
-  CONSTRAINT `seatstype_ibfk_1` FOREIGN KEY (`IATACode`, `FlightNo`, `DepartureTime`) REFERENCES `flight` (`IATACode`, `FlightNo`, `DepartureTime`) ON DELETE CASCADE
+  KEY `IATACode` (`IATACode`,`FlightNo`,`DepartureTime`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

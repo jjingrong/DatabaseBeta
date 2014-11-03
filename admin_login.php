@@ -12,9 +12,10 @@
 
 
 			$query = sprintf("SELECT * FROM cs2102.account WHERE username='%s' AND password='%s'", mysql_real_escape_string($username), mysql_real_escape_string($password));
-			
+			$db = mysql_select_db("cs2102", $link );
 			$result = mysql_query($query);
 			
+
 			if (!$result) {
 			    $message  = 'Invalid query: ' . mysql_error() . "\n";
 			    $message .= 'Whole query: ' . $query;
@@ -28,12 +29,12 @@
 			if($count != 0) {
 				$_SESSION["admin"] = $username;
 				$err_msg = "login success";
-				header('Location: http://localhost/2102/admin_page.php/');
+				header('Location: http://localhost/DatabaseBeta/admin_page.php/');
 			} else {
 				$err_msg = "login fail";
 			}
 
-			mysql_free_result($result);
+			//mysql_free_result($result);
 		}
 	}
 ?>
