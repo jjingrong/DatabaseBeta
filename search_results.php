@@ -46,8 +46,19 @@
 	//$queryResult = mysql_query("CALL cs2102.SearchFlights('Singapore','Hong Kong','2014-11-09','Economy');");
 	$queryResult = mysql_query($query);
 	
+	$passData = '\'<input type="hidden" name="source" value="'.$source.'">';
+	$passData .= '<input type="hidden" name="destination" value="'.$dest.'">';
+	$passData .= '<input type="hidden" name="date" value="'.$date.'">';
+	$passData .= '<input type="hidden" name="class" value="'.$class.'">\'';
    //echo $source;
 	?>
+	<script type="text/javascript">
+	function book($IATACode, $FlightNo, $DepartureTime, $ArrivalTime,$name,$price)
+	{
+		document.body.innerHTML += '<form id="dynForm" action="book.php" method="post"><input type="hidden" name="IATACode" value="'+$IATACode+'"><input type="hidden" name="FlightNo" value="'+$FlightNo+'"><input type="hidden" name="DepartureTime" value="'+$DepartureTime+'"><input type="hidden" name="ArrivalTime" value="'+$ArrivalTime+'"><input type="hidden" name="name" value="'+$name+'"><input type="hidden" name="price" value="'+$price+'">'+<?php echo $passData?>+'</form>';
+		document.getElementById("dynForm").submit();
+	}
+	</script>
 	<!-- Main Wrapper -->
 	<div id="main-wrapper">
 		<div class="wrapper style2">
@@ -98,7 +109,7 @@
 								<!-- Content -->
 
 								<article>
-									<h2>Flights Found!</h2>
+									<h2><?php echo $source?> to <?php echo $dest?> on <?php echo $date?></h2>
 									<!-- Table function -->
 									<p><h3>Please select your prefered flight. </h3></p>
 									<?php while ($row = mysql_fetch_assoc($queryResult)) {
@@ -107,25 +118,14 @@
 									echo"<div class='12u'><div class='flighthead'><h4>".$row['IATACode']." ".$row['FlightNo']."</h4></div></div>";
 									echo	"</div>";
 									echo"<div class='row quarter'>";
-									echo  "<div class='9u'><div class='flightbody'><p>".$row['name']."</p><p>Departing : ".$row['DepartureTime']."</p><p>Arrving: ".$row['ArrivalTime']."</p></div></div>";
-									echo  "<div class='3u'><div class='flightprice'>SGD".$row['price']."<br><input type='submit' class='btn go small icon fa-circle-o-right' text='Book!'/></div></div>";
+									echo  "<div class='9u'><div class='flightbody'>".$row['name']."<br>Departing : ".$row['DepartureTime']."<br>Arrving: ".$row['ArrivalTime']."<br></div></div>";
+									echo  "<div class='3u'><div class='flightprice'>SGD".$row['price']."<br><a href='javascript:book(\"".$row['IATACode']."\",\"".$row['FlightNo']."\",\"".$row['DepartureTime']."\",\"".$row['ArrivalTime']."\",\"".$row['name']."\",\"".$row['price']."\")' class='btn go'>Book!</a></div></div>";
 									echo"</div>";
 									echo"<div class='row quarter'>";
 									echo  "<div class='12u'><div class='flightfooter'>Class : ".$row['classType']."</div></div>";
 									echo"</div></div><br>";
 									 }
 									 ?> 
-									<div id='flightcontainer'>
-									<?php while ($row = mysql_fetch_assoc($queryResult)) {
-										echo "<div class=col-md-3 col-lg-3>";
-										echo "<div id='flightheader'><h3>".$row['IATACode']." ".$row['FlightNo']."</h3></div>";//.$row['name']."</td><td>".$row['IATACode']."</td></tr>";}
-										echo "<div id='flightmain'><p>".$row['name']."</p><p>Departing : ".$row['DepartureTime']."</p><p>".$row['ArrivalTime']."</p></div>";
-									  	echo "<div id='flightbtn'>".$row['price']."<br><input type='submit' class='btn go small icon fa-circle-o-right' id='Book!'/></div>";
-									  	echo "<div id='flightfooter'>Class : ".$row['classType']."</div>";
-									  	echo "</div>";
-									  }
-									  ?>  
-
 									</article>
 
 								</div>
