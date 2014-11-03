@@ -155,3 +155,5 @@
 	echo "<h1>Flights Available</h1>";
 	echo $html_table;
 ?>
+
+<a href="admin_newFlight.php">New Flight</a>
