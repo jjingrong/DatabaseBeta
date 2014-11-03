@@ -1040,4 +1040,34 @@
 		}
 		#modal .btn {
 			float:right;
-		}		
+		}	
+
+/* ---------- LOGIN ---------- */
+
+#login {
+
+	width: 280px;
+}
+
+
+
+#login form input {
+	height: 50px;
+}
+
+#login form input[type="submit"] {
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+
+	font-weight: bold;
+	margin-bottom: 2em;
+	text-transform: uppercase;
+	width: 280px;
+}
+
+
+
+#login > p {
+	text-align: center;
+}	
