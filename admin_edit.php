@@ -11,12 +11,12 @@
 		$classType = $_SESSION["classType"];
 		$seatCount = $_REQUEST["seatCount"];
 		$price = $_REQUEST["price"];
-
-		$seatbooking_delete = sprintf("UPDATE seatsType SET price = '%s', seatCount = '%s' WHERE classType = '%s' AND IATACode = '%s' AND FlightNo = '%s' AND DepartureTime = '%s'", mysql_real_escape_string($price), mysql_real_escape_string($seatCount), mysql_real_escape_string($classType), mysql_real_escape_string($IATACode), mysql_real_escape_string($flightNo), mysql_real_escape_string($DepartureTime));
-		$result = mysql_query( $seatbooking_delete, $link );
+        
+        $seatbooking_update = sprintf("UPDATE seatsType SET price = %s, seatCount = %s WHERE classType = '%s' AND IATACode = '%s' AND FlightNo = '%s' AND DepartureTime = '".$DepartureTime."'", mysql_real_escape_string($price), mysql_real_escape_string($seatCount), mysql_real_escape_string($classType), mysql_real_escape_string($IATACode), mysql_real_escape_string($flightNo));
+		$result = mysql_query($seatbooking_update, $link);
 		if(!$result) {
 	  		$message  = 'Invalid query: ' . mysql_error() . "\n";
-			$message .= 'Whole query: ' . $seatbooking_delete;
+			$message .= 'Whole query: ' . $seatbooking_update;
 			die($message);
 		}
 		echo "<a href='http://localhost/DatabaseBeta/admin_page.php'>Back</a>";
@@ -27,8 +27,6 @@
 		$_SESSION["DepartureTime"] = $_REQUEST["DepartureTime"];
 		$_SESSION["classType"] = $_REQUEST["classType"];
 	}
-
-
 ?>
 
 <!DOCTYPE html>

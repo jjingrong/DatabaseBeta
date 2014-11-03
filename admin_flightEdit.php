@@ -1,5 +1,6 @@
 <?php
 	require('dbConnection.php');
+    require('includes/html_form.class.php');
 	session_start();
 	require('admin_config.php');
 ?>

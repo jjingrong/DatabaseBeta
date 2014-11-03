@@ -60,7 +60,7 @@
 
 		// using $frmStr to concatenate long string of form elements
 		// startForm arguments: action, method, id, optional attributes added in associative array
-		$delFrmStr = $frm->startForm('admin_delete.php?delete=1', 'post') . PHP_EOL .
+		$delFrmStr = $deletefrm->startForm('admin_delete.php?delete=1', 'post') . PHP_EOL .
 
     	$deletefrm->addInput('hidden', 'IATACode', $row["IATACode"], array('id'=>'IATACode') ) .
     	$deletefrm->addInput('hidden', 'FlightNo', $row["FlightNo"], array('id'=>'FlightNo') ) .

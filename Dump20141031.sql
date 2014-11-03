@@ -130,7 +130,7 @@ DROP TABLE IF EXISTS `flight`;
 CREATE TABLE `flight` (
   `IATACode` char(10) NOT NULL DEFAULT '',
   `FlightNo` varchar(10) NOT NULL DEFAULT '',
-  `DepartureTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `DepartureTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ,
   `ArrivalTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `source` varchar(25) NOT NULL,
   `destination` varchar(25) NOT NULL,
@@ -180,7 +180,7 @@ DROP TABLE IF EXISTS `passenger`;
 CREATE TABLE `passenger` (
   `PassportNumber` varchar(25) NOT NULL,
   `name` varchar(25) NOT NULL,
-  `DOB` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `DOB` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`PassportNumber`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -208,7 +208,7 @@ CREATE TABLE `seatsbooking` (
   `classType` varchar(10) NOT NULL DEFAULT '',
   `IATACode` char(10) NOT NULL DEFAULT '',
   `FlightNo` varchar(10) NOT NULL DEFAULT '',
-  `DepartureTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `DepartureTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`ReferenceNo`,`classType`,`IATACode`,`FlightNo`,`DepartureTime`,`seatNo`),
   KEY `IATACode` (`IATACode`,`FlightNo`,`DepartureTime`,`classType`),
   CONSTRAINT `seatsbooking_ibfk_1` FOREIGN KEY (`IATACode`, `FlightNo`, `DepartureTime`, `classType`) REFERENCES `seatstype` (`IATACode`, `FlightNo`, `DepartureTime`, `classType`),
@@ -237,7 +237,7 @@ CREATE TABLE `seatstype` (
   `classType` varchar(10) NOT NULL DEFAULT '',
   `IATACode` char(10) NOT NULL DEFAULT '',
   `FlightNo` varchar(10) NOT NULL DEFAULT '',
-  `DepartureTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `DepartureTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `price` decimal(10,0) DEFAULT NULL,
   `seatCount` decimal(10,0) DEFAULT NULL,
   PRIMARY KEY (`classType`,`IATACode`,`FlightNo`,`DepartureTime`),
