@@ -16,7 +16,7 @@
         	var that = this;
         	setTimeout(function () { that.hide() }, 250);
         };
-        
+
         $('#source').typeahead({
         	source: function(query, process) {
         		return ["Singapore","Ho Chi Minh City", "Hong Kong"];
@@ -30,6 +30,7 @@
         });
     })
 </script>
+
 <body class="left-sidebar">
 	<!-- Header Wrapper -->
 	<?php include_once 'top.php' ?>
@@ -57,7 +58,7 @@
 							<div id="sidebar">
 
 								<!-- Sidebar -->
-								
+
 								<section>
 									<h2>Search</h2>
 									<p>Looking for other flights?</p>
@@ -84,7 +85,7 @@
 												<input type="submit" class="btn go small icon fa-circle-o-right" text="Search!"/>
 											</tr>
 										</table>
-										
+
 										
 									</form>
 								</section>
@@ -95,59 +96,45 @@
 							<div id="content">
 
 								<!-- Content -->
-								
-								<article>
-									<h2>Flights Found:</h2>
-									<!-- Table function -->
-									<p><h3>Placerholder Table search function </h3></p>
-									<table id="table-format">
-										
-									</table>
-									<table id="dataTable" border="5" width="100%" cellspacing="0" cellpadding="5">
-										<thead>
-											<tr>
-												<th><b><u>First Name</th>
-												<th><b><u>Last Name</th>
-												<th><b><u>Email Address</th>
-											</tr>
-										</thead>
-										<tbody>   
 
-											<?php while ($row = mysql_fetch_assoc($queryResult)) {
-												echo "<tr><td>".$row['FlightNo']."</td><td>".$row['name']."</td><td>".$row['IATACode']."</td></tr>";}
-												?>  
-												<tr>
-													<td>Nikhil</td>
-													<td>Vartak</td>
-													<td>nikhil.vartak@hotmail.co.in</td>
-												</tr>
-												<tr>
-													<td>Peter</td>
-													<td>James</td>
-													<td>james_peter@hotmail.com</td>
-												</tr>
-												<tr>
-													<td>Nikhil</td>
-													<td>Vartak</td>
-													<td>nikhilvartak@yahoo.com</td>
-												</tr>
-												<tr>
-													<td>Jing Rong</td>
-													<td>Lim</td>
-													<td>jingrong@nus.edu.sg</td>
-												</tr>
-											</tbody>
-										</table>
+								<article>
+									<h2>Flights Found!</h2>
+									<!-- Table function -->
+									<p><h3>Please select your prefered flight. </h3></p>
+									<?php while ($row = mysql_fetch_assoc($queryResult)) {
+									echo "<div class='flightbkg'>";
+									echo	"<div class='row quarter'>";
+									echo"<div class='12u'><div class='flighthead'><h4>".$row['IATACode']." ".$row['FlightNo']."</h4></div></div>";
+									echo	"</div>";
+									echo"<div class='row quarter'>";
+									echo  "<div class='9u'><div class='flightbody'><p>".$row['name']."</p><p>Departing : ".$row['DepartureTime']."</p><p>Arrving: ".$row['ArrivalTime']."</p></div></div>";
+									echo  "<div class='3u'><div class='flightprice'>SGD".$row['price']."<br><input type='submit' class='btn go small icon fa-circle-o-right' text='Book!'/></div></div>";
+									echo"</div>";
+									echo"<div class='row quarter'>";
+									echo  "<div class='12u'><div class='flightfooter'>Class : ".$row['classType']."</div></div>";
+									echo"</div></div><br>";
+									 }
+									 ?> 
+									<div id='flightcontainer'>
+									<?php while ($row = mysql_fetch_assoc($queryResult)) {
+										echo "<div class=col-md-3 col-lg-3>";
+										echo "<div id='flightheader'><h3>".$row['IATACode']." ".$row['FlightNo']."</h3></div>";//.$row['name']."</td><td>".$row['IATACode']."</td></tr>";}
+										echo "<div id='flightmain'><p>".$row['name']."</p><p>Departing : ".$row['DepartureTime']."</p><p>".$row['ArrivalTime']."</p></div>";
+									  	echo "<div id='flightbtn'>".$row['price']."<br><input type='submit' class='btn go small icon fa-circle-o-right' id='Book!'/></div>";
+									  	echo "<div id='flightfooter'>Class : ".$row['classType']."</div>";
+									  	echo "</div>";
+									  }
+									  ?>  
 
 									</article>
-									
+
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			
+
 		</div>
 
 		<?php include_once 'footer.php' ?>	
