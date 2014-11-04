@@ -3,7 +3,7 @@
 	require('includes/html_form.class.php');
 	session_start();
 	require('admin_config.php');
-	echo $welcome_msg . "</br>";
+
 	$html_table = "<table border='1' cellspacing='5' cellpadding='8' style='border-collapse:collapse'>"; 
 
 	$query = "SELECT * FROM fullflightdetails";
@@ -81,10 +81,8 @@
 		$html_table .= "</tr>";
 	}
 	$html_table .= "</table>";
-	echo "<h1>Flight Seats Details</h1>";
-	echo $html_table;
 
-		$flights_query = "SELECT * FROM flight";
+	$flights_query = "SELECT * FROM flight";
 
 	$result = mysql_query($flights_query);
 
@@ -94,18 +92,18 @@
 		die($message);
 	}
 
-	$html_table = "<table border='1' cellspacing='5' cellpadding='8' style='border-collapse:collapse'>"; 
+	$html_table1 = "<table border='1' cellspacing='5' cellpadding='8' style='border-collapse:collapse'>"; 
 
-	$html_table .= "<tr><td>IATACode</td><td>Flight No.</td><td>Departure Time</td><td>Arrival Time</td><td> Source </td><td> Destination </td><td>Update</td><td>Delete</td></tr>";
+	$html_table1 .= "<tr><td>IATACode</td><td>Flight No.</td><td>Departure Time</td><td>Arrival Time</td><td> Source </td><td> Destination </td><td>Update</td><td>Delete</td></tr>";
 
 	while ($row = mysql_fetch_assoc($result)) {
-		$html_table .= "<tr>";
-		$html_table .= "<td>" . $row["IATACode"] . "</td>";
-		$html_table .= "<td>" . $row["FlightNo"] . "</td>";
-		$html_table .= "<td>" . $row["DepartureTime"] . "</td>";
-		$html_table .= "<td>" . $row["ArrivalTime"] . "</td>";
-		$html_table .= "<td>" . $row["source"] . "</td>";
-		$html_table .= "<td>" . $row["destination"] . "</td>";
+		$html_table1 .= "<tr>";
+		$html_table1 .= "<td>" . $row["IATACode"] . "</td>";
+		$html_table1 .= "<td>" . $row["FlightNo"] . "</td>";
+		$html_table1 .= "<td>" . $row["DepartureTime"] . "</td>";
+		$html_table1 .= "<td>" . $row["ArrivalTime"] . "</td>";
+		$html_table1 .= "<td>" . $row["source"] . "</td>";
+		$html_table1 .= "<td>" . $row["destination"] . "</td>";
 		
 		// create instance of HTML_Form
 		$flightFrm = new HTML_Form();
@@ -127,7 +125,7 @@
 
         $flightFrm->endForm();
 
-        $html_table .= "<td>" . $frmStr . "</td>";
+        $html_table1 .= "<td>" . $frmStr . "</td>";
 
         // create instance of HTML_Form
 		$deleteFlightfrm = new HTML_Form();
@@ -148,12 +146,63 @@
 	    $deleteFlightfrm->endTag() . PHP_EOL .
 
         $deleteFlightfrm->endForm();
-        $html_table .= "<td>" . $delFrmStr . "</td>";
-		$html_table .= "</tr>";
+        $html_table1 .= "<td>" . $delFrmStr . "</td>";
+		$html_table1 .= "</tr>";
 	}
-	$html_table .= "</table>";
-	echo "<h1>Flights Available</h1>";
-	echo $html_table;
+	$html_table1 .= "</table>";
+	
 ?>
 
-<a href="admin_newFlight.php">New Flight</a>
+
+<!DOCTYPE HTML>
+<!--
+	ZeroFour by HTML5 UP
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<?php include_once 'header.php' ?>
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap-typeahead.js"></script>
+
+
+<body class="left-sidebar">
+	<!-- Header Wrapper -->
+	<?php include_once 'top.php' ?>
+	
+	<!-- Main Wrapper -->
+	<div id="main-wrapper">
+		<div class="wrapper style2">
+			<div class="inner">
+				<div class="container">
+					<div class="row">
+						<div class="3u">
+							<div id="sidebar">
+
+								<!-- Sidebar -->
+								
+							</div>
+						</div>
+						<div class="12u skel-cell-important">
+							<div id="content">
+								<?php echo $welcome_msg . "</br>"; ?>
+								<!-- Content -->
+								<h1>Flight Seats Details</h1>
+								<?php echo $html_table; ?>
+								<h1>Flights Available</h1>
+								<?php echo $html_table1; ?>
+								<a href="admin_newFlight.php">New Flight</a>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<?php include_once 'footer.php' ?>	
+
+	</body>
+	</html>

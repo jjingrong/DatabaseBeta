@@ -15,6 +15,7 @@
 												<ul>
 													<li><a href="index.html">Home</a></li>
 													<li class="current_page_item"><a href="bookingpage.html">Book Flights</a></li>
+													<li class="#"><a href="admin_login.php">Login</a></li>
 													<li>
 														<a href="">Dropdown</a>
 														<ul>
