@@ -27,7 +27,8 @@ DROP TABLE IF EXISTS `accompanied_booking`;
 CREATE TABLE `accompanied_booking` (
   `PassportNumber` varchar(25) NOT NULL DEFAULT '',
   `ReferenceNo` varchar(25) NOT NULL DEFAULT '',
-  PRIMARY KEY (`PassportNumber`,`ReferenceNo`),
+  `accompaniedPassportNo` varchar(25) NOT NULL,
+  PRIMARY KEY (`PassportNumber`,`ReferenceNo`, `accompaniedPassportNo`),
   KEY `ReferenceNo` (`ReferenceNo`),
   CONSTRAINT `accompanied_booking_ibfk_1` FOREIGN KEY (`PassportNumber`) REFERENCES `passenger` (`PassportNumber`),
   CONSTRAINT `accompanied_booking_ibfk_2` FOREIGN KEY (`ReferenceNo`) REFERENCES `booking` (`ReferenceNo`) ON DELETE CASCADE

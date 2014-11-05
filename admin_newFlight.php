@@ -3,6 +3,7 @@
     require('includes/html_form.class.php');
 	session_start();
 	require('admin_config.php');
+    $success = "";
 
 	if(ISSET($_REQUEST["add"])) {
 		$IATACode = $_REQUEST["IATACode"];
@@ -42,8 +43,8 @@
 			$message .= 'Whole query: ' . $insertSeatTypeBz;
 			die($message);
 		}
-		echo "The Flight No : " . $flightNo . " has been added to the list";
-		echo "<a href='http://localhost/DatabaseBeta/admin_page.php'>View Here</a>";
+		$success = "The Flight No : " . $flightNo . " has been added to the list";
+		$success .= "<a href='http://localhost/DatabaseBeta/admin_page.php'>View Here</a>";
 	}
 
 	$IATAquery = "SELECT IATACode FROM airline";
@@ -92,6 +93,7 @@
                         <div class="12u skel-cell-important">
                                 <h1> ADD NEW FLIGHT </h1>
                                 <?php
+                                    if(strlen($success) == 0) {
                                     // create instance of HTML_Form
                                     $frm = new HTML_Form();
 
@@ -195,6 +197,8 @@
 
                                     // finally, output the long string
                                     echo $frmStr;
+                                    }
+                                    echo $success;
                                 ?>
                         </div>
                     </div>
