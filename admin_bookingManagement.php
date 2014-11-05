@@ -39,7 +39,7 @@
 			// create instance of HTML_Form
 			$editfrm = new HTML_Form();
 
-			$editFrmStr = $editfrm->startForm('?delete=1', 'post') . PHP_EOL .
+			$editFrmStr = $editfrm->startForm('admin_updateBookingDetail.php', 'post') . PHP_EOL .
 
 	    	$editfrm->addInput('hidden', 'ReferenceNo', $row["ReferenceNo"], array('id'=>'ReferenceNo') ) .
 	    	$editfrm->addInput('hidden', 'name', $row["name"], array('id'=>'name') ) .
@@ -76,8 +76,8 @@
 <?php require('front_half.php'); ?>
 <h1> Booking Management </h1>
 <?php
-	echo $errMsg . "<br>";
-	echo $success . "<br>";
+	echo $errMsg;
+	echo $success;
 	echo $html_table;
 ?>
 <br>
