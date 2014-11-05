@@ -26,9 +26,8 @@ DROP TABLE IF EXISTS `accompanied_booking`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `accompanied_booking` (
   `PassportNumber` varchar(25) NOT NULL DEFAULT '',
-  `ReferenceNo` varchar(25) NOT NULL DEFAULT '',
-  `accompaniedPassportNo` varchar(25) NOT NULL,
-  PRIMARY KEY (`PassportNumber`,`ReferenceNo`, `accompaniedPassportNo`),
+  `ReferenceNo` int(25) NOT NULL,
+  PRIMARY KEY (`PassportNumber`,`ReferenceNo`),
   KEY `ReferenceNo` (`ReferenceNo`),
   CONSTRAINT `accompanied_booking_ibfk_1` FOREIGN KEY (`PassportNumber`) REFERENCES `passenger` (`PassportNumber`),
   CONSTRAINT `accompanied_booking_ibfk_2` FOREIGN KEY (`ReferenceNo`) REFERENCES `booking` (`ReferenceNo`) ON DELETE CASCADE
@@ -108,7 +107,7 @@ CREATE TABLE `booking` (
   `PassportNumber` varchar(25) NOT NULL,
   PRIMARY KEY (`ReferenceNo`),
   KEY `fk_PassportNumber` (`PassportNumber`),
-  CONSTRAINT `fk_PassportNumber` FOREIGN KEY (`PassportNumber`) REFERENCES `passenger` (`PassportNumber`)
+  CONSTRAINT `fk_PassportNumber` FOREIGN KEY (`PassportNumber`) REFERENCES `passenger` (`PassportNumber`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -210,7 +209,7 @@ CREATE TABLE `seatsbooking` (
   `classType` varchar(10) NOT NULL DEFAULT '',
   `IATACode` char(10) NOT NULL DEFAULT '',
   `FlightNo` varchar(10) NOT NULL DEFAULT '',
-  `DepartureTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `DepartureTime` timestamp NOT NULL ,
   PRIMARY KEY (`ReferenceNo`,`classType`,`IATACode`,`FlightNo`,`DepartureTime`,`seatNo`),
   KEY `IATACode` (`IATACode`,`FlightNo`,`DepartureTime`,`classType`),
   CONSTRAINT `seatsbooking_ibfk_1` FOREIGN KEY (`IATACode`, `FlightNo`, `DepartureTime`, `classType`) REFERENCES `seatstype` (`IATACode`, `FlightNo`, `DepartureTime`, `classType`),
