@@ -209,11 +209,8 @@
 							<div id="content">
 								<h1><?php echo $welcome_msg . "</br>"; ?></h1>
 								<a href="admin_newFlight.php" style="float:left; display:block; margin: 0px 10px 5px 0px; background:#ccc; text-decoration:none; color:#fff; padding: 10px; width:14%; color:#fff; border-radius:5px;"><b>Add A New Flight</b></a>
-
 								<a href="admin_manageAdmin.php" style="float:left; display:block; margin: 0px 10px 5px 0px; background:#ccc; text-decoration:none; padding: 10px; width:16%; color:#fff; border-radius:5px;"><b>Admin Management</b></a>
-
-								<a href="admin_manageUser.php" style="float:left; display:block; margin: 0px 10px 5px 0px; background:#ccc; text-decoration:none; padding: 10px; width:20%; color:#fff; border-radius:5px;"><b>Passenger Management</b></a><br>
-
+								<a href="admin_bookingManagement.php" style="float:left; display:block; margin: 0px 10px 5px 0px; background:#ccc; text-decoration:none; padding: 10px; width:20%; color:#fff; border-radius:5px;"><b>Booking Management</b></a><br>
 								<br>
 								<!-- Content -->
 								<h1>Flight Seats Details</h1>
