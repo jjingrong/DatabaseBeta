@@ -41,6 +41,7 @@ CREATE TABLE `accompanied_booking` (
 
 LOCK TABLES `accompanied_booking` WRITE;
 /*!40000 ALTER TABLE `accompanied_booking` DISABLE KEYS */;
+INSERT INTO `accompanied_booking` VALUES ('E1234568','1');
 /*!40000 ALTER TABLE `accompanied_booking` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -101,7 +102,7 @@ DROP TABLE IF EXISTS `booking`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `booking` (
-  `ReferenceNo` varchar(25) NOT NULL,
+  `ReferenceNo` int(11) NOT NULL AUTO_INCREMENT,
   `ContactNum` varchar(25) NOT NULL,
   `ContactEmail` varchar(25) NOT NULL,
   `PassportNumber` varchar(25) NOT NULL,
@@ -192,7 +193,7 @@ CREATE TABLE `passenger` (
 
 LOCK TABLES `passenger` WRITE;
 /*!40000 ALTER TABLE `passenger` DISABLE KEYS */;
-INSERT INTO `passenger` VALUES ('E1234567','John Tan','1989-12-31 08:00:00');
+INSERT INTO `passenger` VALUES ('E1234567','John Tan','1989-12-30 16:00:00'),('E1234568','Jane Tan','1990-12-29 16:00:00');
 /*!40000 ALTER TABLE `passenger` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -205,7 +206,7 @@ DROP TABLE IF EXISTS `seatsbooking`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `seatsbooking` (
   `seatNo` varchar(10) NOT NULL,
-  `ReferenceNo` varchar(25) NOT NULL DEFAULT '',
+  `ReferenceNo` int(11) NOT NULL,
   `classType` varchar(10) NOT NULL DEFAULT '',
   `IATACode` char(10) NOT NULL DEFAULT '',
   `FlightNo` varchar(10) NOT NULL DEFAULT '',
@@ -271,7 +272,7 @@ UNLOCK TABLES;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `GetAllAirlines`()
 BEGIN
-   SELECT *  FROM Airlines;
+   SELECT *  FROM Airline;
    END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -288,7 +289,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`%` PROCEDURE `GetEmptySeats`(IN IATACODE_PARAM CHAR(10), IN FlightNo_PARAM VARCHAR(10), IN DepartureTime_PARAM Timestamp, IN ClassType_PARAM VARCHAR(10))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetEmptySeats`(IN IATACODE_PARAM CHAR(10), IN FlightNo_PARAM VARCHAR(10), IN DepartureTime_PARAM Timestamp, IN ClassType_PARAM VARCHAR(10))
 BEGIN
  SELECT st.seatCount - COUNT(*) as EmptySeats
  FROM SeatsBooking sb INNER JOIN seatstype st
@@ -307,6 +308,32 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `NewPassenger` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `NewPassenger`(PN_PARAM varchar(25), NAME_PARAM varchar(25), DOB_PARAM TIMESTAMP)
+BEGIN
+#If passenger already exists, do nothing.
+#Else If passenger exists, but details different, throw violation.
+#Else add new passenger
+INSERT INTO passenger(`PassportNumber`,`name`,`DOB`)
+SELECT PN_PARAM, NAME_PARAM, DOB_PARAM FROM `passenger` 
+WHERE NOT EXISTS (SELECT * FROM `passenger` 
+      WHERE PassportNumber=PN_PARAM AND name=NAME_PARAM AND DOB = DOB_PARAM) 
+LIMIT 1; 
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `SearchFlights` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -317,7 +344,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SearchFlights`(IN SOURCE_PARAM VARCHAR(10), IN DESTINATION_PARAM VARCHAR(10), IN DATE_PARAM CHAR(10), IN CLASS_PARAM VARCHAR(10))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SearchFlights`(IN SOURCE_PARAM VARCHAR(25), IN DESTINATION_PARAM VARCHAR(25), IN DATE_PARAM CHAR(10), IN CLASS_PARAM VARCHAR(10))
 BEGIN
 SELECT * FROM FullFlightDetails WHERE 
 source LIKE SOURCE_PARAM AND destination LIKE DESTINATION_PARAM AND 
@@ -338,7 +365,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SearchFlightsSorted`(IN SOURCE_PARAM VARCHAR(10), IN DESTINATION_PARAM VARCHAR(10), IN DATE_PARAM CHAR(10), IN CLASS_PARAM VARCHAR(10), IN SORTBY_PARAM VARCHAR(10), IN ORDER_PARAM CHAR(1))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SearchFlightsSorted`(IN SOURCE_PARAM VARCHAR(25), IN DESTINATION_PARAM VARCHAR(25), IN DATE_PARAM CHAR(10), IN CLASS_PARAM VARCHAR(10), IN SORTBY_PARAM VARCHAR(10), IN ORDER_PARAM CHAR(1))
 BEGIN
 
 CASE 
@@ -450,4 +477,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-10-31 16:59:43
+-- Dump completed on 2014-11-05 16:56:48
