@@ -59,10 +59,24 @@
 	$query 	= "CALL cs2102.GetEmptySeats('".$IATACode."','".$FlightNo."','".$DepartureTime."','".$class."');";
 	include_once 'dbConnection.php';
 	//$queryResult = mysql_query("CALL cs2102.SearchFlights('Singapore','Hong Kong','2014-11-09','Economy');");
-	$queryResult = mysql_query($query);
+	//$queryResult = mysql_query($query);
+	//todo: check against empty seats
+
+	$passData = '\'<input type="hidden" name="source" value="'.$source.'">';
+	$passData .= '<input type="hidden" name="destination" value="'.$dest.'">';
+	$passData .= '<input type="hidden" name="IATACode" value="'.$IATACode.'">';
+	$passData .= '<input type="hidden" name="FlightNo" value="'.$FlightNo.'">';
+	$passData .= '<input type="hidden" name="price" value="'.$price.'">';
+	$passData .= '<input type="hidden" name="name" value="'.$name.'">';
+	$passData .= '<input type="hidden" name="ArrivalTime" value="'.$ArrivalTime.'">';
+	$passData .= '<input type="hidden" name="DepartureTime" value="'.$DepartureTime.'">';
+	$passData .= '<input type="hidden" name="date" value="'.$date.'">';
+	$passData .= '<input type="hidden" name="class" value="'.$class.'">\'';
+   
 	
    //echo $source;
 	?>
+	
 	<!-- Main Wrapper -->
 	<div id="main-wrapper">
 		<div class="wrapper style2">
@@ -105,14 +119,17 @@
 								<article>
 									<h2><?php echo $source?> to <?php echo $dest?> on <?php echo $date?></h2>
 									<!-- Table function -->
-									<p><h3>Passenger Details </h3><br><form>Number of Passengers:<br><select id="numpax" onchange="numPax()">
+
+									<form id= "bookform" action="book_result.php" method="post">
+									<h3>Passenger Details </h3><br>Number of Passengers:<br>
+									<select id="numpax" name="numpax" onchange="numPax()" form="bookform">
 															<option value="1">1</option>
 															<option value="2">2</option>
 															<option value="3">3</option>
 															<option value="4">4</option>
-														</select></form> </p>
+														</select>
 
-									<form action="search_results.php" method="post">
+									
 											<h4>Passenger 1:</h4>
 											<table id="dataTable" border="5" width="100%" cellspacing="0" cellpadding="5">
 												<tr>
@@ -196,7 +213,9 @@
 			</div>
 
 		</div>
-
+		<script type="text/javascript">
+		document.getElementById('bookform').innerHTML += <?php echo $passData?>;
+		</script>
 		<?php include_once 'footer.php' ?>	
 
 	</body>
