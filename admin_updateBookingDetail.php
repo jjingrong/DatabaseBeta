@@ -18,18 +18,12 @@
 
         $result = mysql_query($bookingDetail_update, $link);
         if(!$result) {
-        	$message  = 'Invalid query: ' . mysql_error() . "\n";
-			$message .= 'Whole query: ' . $query;
-			die($message);
             $errMsg = "Edit Fails Please contact the adminstrator.";
         } else {
 			$bookingDetail_update = sprintf("UPDATE Passenger SET name = '%s' WHERE PassportNumber = '%s'", mysql_real_escape_string($name), mysql_real_escape_string($PassportNumber));
 
 			$result = mysql_query($bookingDetail_update, $link);
 			if(!$result) {
-        		$message  = 'Invalid query: ' . mysql_error() . "\n";
-				$message .= 'Whole query: ' . $query;
-				die($message);
             	$errMsg = "Edit Fails Please contact the adminstrator.";
         	} else {
         		$success = "The updated has been successful. Please click on the link to view the changes made <a href='admin_bookingManagement.php'>Back</a>";
@@ -88,5 +82,6 @@
 		echo $success;
 		echo $frmStr; 
 	?>
+	<a href='admin_page.php' style="float:left; display:block; margin: 0px 10px 5px 0px; background:#ccc; text-decoration:none; color:#fff; padding: 10px; width:14%; color:#fff; border-radius:5px;">Back to Admin Page.</a>
 <?php require('lower_half.php'); ?>
 

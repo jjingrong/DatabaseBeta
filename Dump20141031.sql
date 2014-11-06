@@ -131,10 +131,10 @@ DROP TABLE IF EXISTS `flight`;
 CREATE TABLE `flight` (
   `IATACode` char(10) NOT NULL DEFAULT '',
   `FlightNo` varchar(10) NOT NULL DEFAULT '',
-  `DepartureTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ,
-  `ArrivalTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `DepartureTime` timestamp NOT NULL,
+  `ArrivalTime` timestamp NOT NULL CHECK (`ArrivalTime` >= `DepartureTime`),
   `source` varchar(25) NOT NULL,
-  `destination` varchar(25) NOT NULL,
+  `destination` varchar(25) NOT NULL, 
   PRIMARY KEY (`IATACode`,`FlightNo`,`DepartureTime`),
   CONSTRAINT `flight_ibfk_1` FOREIGN KEY (`IATACode`) REFERENCES `airline` (`IATACode`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;

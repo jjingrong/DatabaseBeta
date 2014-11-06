@@ -4,6 +4,7 @@
 	session_start();
 	require('admin_config.php');
     $success = "";
+    $errMsg = "";
 	if(ISSET($_REQUEST["change"])) {
 		$IATACode = $_SESSION["IATACode"];
 		$flightNo = $_SESSION["FlightNo"];
@@ -15,11 +16,10 @@
         $seatbooking_update = sprintf("UPDATE seatsType SET price = %s, seatCount = %s WHERE classType = '%s' AND IATACode = '%s' AND FlightNo = '%s' AND DepartureTime = '".$DepartureTime."'", mysql_real_escape_string($price), mysql_real_escape_string($seatCount), mysql_real_escape_string($classType), mysql_real_escape_string($IATACode), mysql_real_escape_string($flightNo));
 		$result = mysql_query($seatbooking_update, $link);
 		if(!$result) {
-	  		$message  = 'Invalid query: ' . mysql_error() . "\n";
-			$message .= 'Whole query: ' . $seatbooking_update;
-			die($message);
-		}
-         $success = "The updated has been successful. Please click on the link to view the changes made <a href='http://localhost/DatabaseBeta/admin_page.php'>Back</a>";
+            $errMsg = "Data invalid. Error in update. Please contact Adminstrator.";
+		} else {
+            $success = "The updated has been successful. Please click on the link to view the changes made <a href='http://localhost/DatabaseBeta/admin_page.php'>Back</a>";
+        }
 	} else {
 		$_SESSION["IATACode"] = $_REQUEST["IATACode"];
 		$_SESSION["FlightNo"] = $_REQUEST["FlightNo"];
@@ -140,9 +140,11 @@
                                     $frm->endForm();
 
                                     // finally, output the long string
+                                    echo $errMsg;
                                     echo $frmStr;
                                     echo $success;
                                 ?>
+                                <a href='admin_page.php' style="float:left; display:block; margin: 0px 10px 5px 0px; background:#ccc; text-decoration:none; color:#fff; padding: 10px; width:14%; color:#fff; border-radius:5px;">Back to Admin Page.</a>
                             </div>
                         </div>
                     </div>

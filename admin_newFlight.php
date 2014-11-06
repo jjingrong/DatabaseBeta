@@ -4,6 +4,7 @@
 	session_start();
 	require('admin_config.php');
     $success = "";
+    $errMsg = "";
 
 	if(ISSET($_REQUEST["add"])) {
 		$IATACode = $_REQUEST["IATACode"];
@@ -17,34 +18,40 @@
 		$bzPrice = $_REQUEST["bzPrice"];
 		$bzSeatCount = $_REQUEST["bzSeatCount"];
 
-		$insertQuery = sprintf("INSERT INTO flight VALUES ('%s','%s','%s','%s','%s','%s')", mysql_real_escape_string($IATACode), mysql_real_escape_string($flightNo), mysql_real_escape_string($DepartureTime), mysql_real_escape_string($ArrivalTime), mysql_real_escape_string($source), mysql_real_escape_string($destination));
-		$result = mysql_query($insertQuery);
-		
-		if(!$result) {
-  			$message  = 'Invalid query: ' . mysql_error() . "\n";
-			$message .= 'Whole query: ' . $insertQuery;
-			die($message);
-		}
+        $date = strtotime($ArrivalTime);
+        $date2 = strtotime($DepartureTime);
 
-		$insertSeatTypeEC = sprintf("INSERT INTO seatstype VALUES ('Economy','%s','%s','%s','%s','%s')", mysql_real_escape_string($IATACode), mysql_real_escape_string($flightNo), mysql_real_escape_string($ecPrice),mysql_real_escape_string($DepartureTime),  mysql_real_escape_string($ecSeatCount));
-		
-		$result = mysql_query($insertSeatTypeEC);
-		if(!$result) {
-  			$message  = 'Invalid query: ' . mysql_error() . "\n";
-			$message .= 'Whole query: ' . $insertSeatTypeEC;
-			die($message);
-		}
 
-		$insertSeatTypeBz =sprintf("INSERT INTO seatstype VALUES ('Business','%s','%s','%s','%s','%s')", mysql_real_escape_string($IATACode), mysql_real_escape_string($flightNo), mysql_real_escape_string($bzPrice),mysql_real_escape_string($DepartureTime),  mysql_real_escape_string($bzSeatCount));;
-		
-		$result = mysql_query($insertSeatTypeBz);
-		if(!$result) {
-  			$message  = 'Invalid query: ' . mysql_error() . "\n";
-			$message .= 'Whole query: ' . $insertSeatTypeBz;
-			die($message);
-		}
-		$success = "The Flight No : " . $flightNo . " has been added to the list";
-		$success .= "<a href='http://localhost/DatabaseBeta/admin_page.php'>View Here</a>";
+        if(!($date === false) && !($date2 === false) && $date > $date2 && (is_numeric ($bzSeatCount) && is_numeric ($ecSeatCount) && is_numeric ($ecPrice) && is_numeric ($bzPrice))) {
+            $insertQuery = sprintf("INSERT INTO flight (IATACode, FlightNo, DepartureTime, ArrivalTime, source, destination) VALUES ('%s','%s','%s','%s','%s','%s')", mysql_real_escape_string($IATACode), mysql_real_escape_string($flightNo), mysql_real_escape_string($DepartureTime), mysql_real_escape_string($ArrivalTime), mysql_real_escape_string($source), mysql_real_escape_string($destination));
+            $result = mysql_query($insertQuery);
+            
+            if(!$result) {
+                $errMsg = "Data Error. Please check that all data are unique1";
+            }
+
+            $insertSeatTypeEC = sprintf("INSERT INTO seatstype (classType, IATACode, FlightNo, price, DepartureTime, seatCount) VALUES ('Economy','%s','%s','%s','%s','%s')", mysql_real_escape_string($IATACode), mysql_real_escape_string($flightNo), mysql_real_escape_string($ecPrice),mysql_real_escape_string($DepartureTime),  mysql_real_escape_string($ecSeatCount));
+            
+            $result = mysql_query($insertSeatTypeEC);
+            if(!$result) {
+                $errMsg = "Data Error. Please check that all data are unique2";
+            }
+
+            $insertSeatTypeBz =sprintf("INSERT INTO seatstype  (classType, IATACode, FlightNo, price, DepartureTime, seatCount) VALUES ('Business','%s','%s','%s','%s','%s')", mysql_real_escape_string($IATACode), mysql_real_escape_string($flightNo), mysql_real_escape_string($bzPrice),mysql_real_escape_string($DepartureTime),  mysql_real_escape_string($bzSeatCount));
+            
+            $result = mysql_query($insertSeatTypeBz);
+            if(!$result) {
+                $errMsg = "Data Error. Please check that all data are unique3";
+            } 
+            
+            if(strlen($errMsg) == 0) {
+                $success = "The Flight No : " . $flightNo . " has been added to the list";
+                $success .= "<a href='http://localhost/DatabaseBeta/admin_page.php'>View Here</a>";
+            }
+        }else {
+            $errMsg = "*Error in the date format. ArrivalTime must be later than DepartureTime.";
+            $errMsg .= "<br>*Error in the data";
+        }
 	}
 
 	$IATAquery = "SELECT IATACode FROM airline";
@@ -198,8 +205,11 @@
                                     // finally, output the long string
                                     echo $frmStr;
                                     }
+                                    echo $errMsg;
                                     echo $success;
                                 ?>
+                                <br>
+                                <a href='admin_page.php' style="float:left; display:block; margin: 0px 10px 5px 0px; background:#ccc; text-decoration:none; color:#fff; padding: 10px; width:14%; color:#fff; border-radius:5px;">Back to Admin Page.</a>
                         </div>
                     </div>
                 </div>

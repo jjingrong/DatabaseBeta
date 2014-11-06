@@ -20,12 +20,6 @@
 	$query = "SELECT * FROM Account";
 	$result = mysql_query($query);
 
-	if (!$result) {
-		$message  = 'Invalid query: ' . mysql_error() . "\n";
-		$message .= 'Whole query: ' . $query;
-		die($message);
-	}
-
 	$html_table = "<table>";
 	$html_table .= "<tr><td>Username</td><td>Password</td><td>Edit Password</td><td>Delete</td></tr>";
 
@@ -61,4 +55,5 @@
 <h1> Admin Management </h1>
 <?php echo $html_table; ?>
 <a href="admin_addAdmin.php" style="float:left; display:block; margin: 0px 10px 5px 0px; background:#ccc; text-decoration:none; padding: 10px; width:16%; color:#fff; border-radius:5px;"><b>Add Admin</b></a>
+<a href='admin_page.php' style="float:left; display:block; margin: 0px 10px 5px 0px; background:#ccc; text-decoration:none; color:#fff; padding: 10px; width:14%; color:#fff; border-radius:5px;">Back to Admin Page.</a>
 <?php require('lower_half.php'); ?>
