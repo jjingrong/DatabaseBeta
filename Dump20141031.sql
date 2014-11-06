@@ -4,7 +4,7 @@ USE `cs2102`;
 --
 -- Host: 127.0.0.1    Database: cs2102
 -- ------------------------------------------------------
--- Server version 5.5.40
+-- Server version	5.5.40
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -40,7 +40,7 @@ CREATE TABLE `accompanied_booking` (
 
 LOCK TABLES `accompanied_booking` WRITE;
 /*!40000 ALTER TABLE `accompanied_booking` DISABLE KEYS */;
-INSERT INTO `accompanied_booking` VALUES ('E1234568',1),('EP10001',13),('E0000PR',18);
+INSERT INTO `accompanied_booking` VALUES ('E1234568',1),('EP10001',13),('E0000PR',19),('EP10001',19),('EP10003',19),('E10005',21);
 /*!40000 ALTER TABLE `accompanied_booking` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -108,7 +108,7 @@ CREATE TABLE `booking` (
   PRIMARY KEY (`ReferenceNo`),
   KEY `fk_PassportNumber` (`PassportNumber`),
   CONSTRAINT `fk_PassportNumber` FOREIGN KEY (`PassportNumber`) REFERENCES `passenger` (`PassportNumber`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -117,7 +117,7 @@ CREATE TABLE `booking` (
 
 LOCK TABLES `booking` WRITE;
 /*!40000 ALTER TABLE `booking` DISABLE KEYS */;
-INSERT INTO `booking` VALUES (1,'91234567','hello@goodbye.com','E1234567'),(6,'12345','email@mail.com','EP10001'),(7,'12345','email@mail.com','EP10001'),(8,'12345','email@mail.com','EP10002'),(9,'6123 6780','email2@mail.com','EP10002'),(10,'6123 6780','email2@mail.com','EP10002'),(11,'6123 6780','email2@mail.com','EP10002'),(12,'6123 6780','email2@mail.com','EP10002'),(13,'6123 6780','email2@mail.com','EP10002'),(14,'90034942','rey@nus.edu.sg','E0000PR'),(15,'90034942','rey@nus.edu.sg','E0000PR'),(17,'91234567','asdf@asdasd.das','E111111E'),(18,'91234567','asdf@asdasd.das','E111111E');
+INSERT INTO `booking` VALUES (1,'91234567','hello@goodbye.com','E1234567'),(6,'12345','email@mail.com','EP10001'),(7,'12345','email@mail.com','EP10001'),(8,'12345','email@mail.com','EP10002'),(9,'6123 6780','email2@mail.com','EP10002'),(10,'6123 6780','email2@mail.com','EP10002'),(11,'6123 6780','email2@mail.com','EP10002'),(12,'6123 6780','email2@mail.com','EP10002'),(13,'6123 6780','email2@mail.com','EP10002'),(14,'90034942','rey@nus.edu.sg','E0000PR'),(15,'90034942','rey@nus.edu.sg','E0000PR'),(17,'91234567','asdf@asdasd.das','E111111E'),(19,'90000000','llll@lll.com','EL01'),(21,'9001000','jim@lee.com','E10000');
 /*!40000 ALTER TABLE `booking` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -131,10 +131,10 @@ DROP TABLE IF EXISTS `flight`;
 CREATE TABLE `flight` (
   `IATACode` char(10) NOT NULL DEFAULT '',
   `FlightNo` varchar(10) NOT NULL DEFAULT '',
-  `DepartureTime` timestamp NOT NULL,
-  `ArrivalTime` timestamp NOT NULL CHECK (`ArrivalTime` >= `DepartureTime`),
+  `DepartureTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `ArrivalTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `source` varchar(25) NOT NULL,
-  `destination` varchar(25) NOT NULL, 
+  `destination` varchar(25) NOT NULL,
   PRIMARY KEY (`IATACode`,`FlightNo`,`DepartureTime`),
   CONSTRAINT `flight_ibfk_1` FOREIGN KEY (`IATACode`) REFERENCES `airline` (`IATACode`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -192,7 +192,7 @@ CREATE TABLE `passenger` (
 
 LOCK TABLES `passenger` WRITE;
 /*!40000 ALTER TABLE `passenger` DISABLE KEYS */;
-INSERT INTO `passenger` VALUES ('E0000PR','Rey Neo','1991-08-22 16:00:00'),('E111111E','Tan Gu Gu','1989-12-31 16:00:00'),('E1234567','John Tan','1989-12-30 16:00:00'),('E1234568','Jane Tan','1990-12-29 16:00:00'),('EP10001','Tan Ah Kow','1979-12-31 16:00:00'),('EP10002','Tan Ah Meow','1974-12-31 16:00:00');
+INSERT INTO `passenger` VALUES ('E0000PR','Rey Neo','1991-08-22 16:00:00'),('E10000','Jim Lee','1990-12-31 16:00:00'),('E10005','Joe Lee','1989-12-31 16:00:00'),('E111111E','Tan Gu Gu','1989-12-31 16:00:00'),('E1234567','John Tan','1989-12-30 16:00:00'),('E1234568','Jane Tan','1990-12-29 16:00:00'),('edfd','Rey Neo','0000-00-00 00:00:00'),('EL01','Lily Lim Li Lee','1989-12-31 16:00:00'),('EP10001','Tan Ah Kow','1979-12-31 16:00:00'),('EP10002','Tan Ah Meow','1974-12-31 16:00:00'),('EP10003','Ho Lee Fuk','1980-12-31 16:00:00');
 /*!40000 ALTER TABLE `passenger` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -209,7 +209,7 @@ CREATE TABLE `seatsbooking` (
   `classType` varchar(10) NOT NULL DEFAULT '',
   `IATACode` char(10) NOT NULL DEFAULT '',
   `FlightNo` varchar(10) NOT NULL DEFAULT '',
-  `DepartureTime` timestamp NOT NULL ,
+  `DepartureTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`ReferenceNo`,`classType`,`IATACode`,`FlightNo`,`DepartureTime`,`seatNo`),
   KEY `IATACode` (`IATACode`,`FlightNo`,`DepartureTime`,`classType`),
   CONSTRAINT `seatsbooking_ibfk_1` FOREIGN KEY (`IATACode`, `FlightNo`, `DepartureTime`, `classType`) REFERENCES `seatstype` (`IATACode`, `FlightNo`, `DepartureTime`, `classType`),
@@ -223,7 +223,7 @@ CREATE TABLE `seatsbooking` (
 
 LOCK TABLES `seatsbooking` WRITE;
 /*!40000 ALTER TABLE `seatsbooking` DISABLE KEYS */;
-INSERT INTO `seatsbooking` VALUES ('178',1,'Economy','3K','555','2014-11-08 16:00:00'),('179',1,'Economy','3K','555','2014-11-08 16:00:00'),('180',1,'Economy','3K','555','2014-11-08 16:00:00'),('177',7,'Economy','3K','555','2014-11-08 16:00:00'),('176',8,'Economy','3K','555','2014-11-08 16:00:00'),('299',13,'Economy','SQ','123','2014-11-09 00:00:00'),('300',13,'Economy','SQ','123','2014-11-09 00:00:00'),('298',14,'Economy','SQ','123','2014-11-09 00:00:00'),('297',15,'Economy','SQ','123','2014-11-09 00:00:00'),('296',17,'Economy','SQ','123','2014-11-09 00:00:00'),('294',18,'Economy','SQ','123','2014-11-09 00:00:00'),('295',18,'Economy','SQ','123','2014-11-09 00:00:00');
+INSERT INTO `seatsbooking` VALUES ('178',1,'Economy','3K','555','2014-11-08 16:00:00'),('179',1,'Economy','3K','555','2014-11-08 16:00:00'),('180',1,'Economy','3K','555','2014-11-08 16:00:00'),('177',7,'Economy','3K','555','2014-11-08 16:00:00'),('176',8,'Economy','3K','555','2014-11-08 16:00:00'),('174',21,'Economy','3K','555','2014-11-08 16:00:00'),('175',21,'Economy','3K','555','2014-11-08 16:00:00'),('299',13,'Economy','SQ','123','2014-11-09 00:00:00'),('300',13,'Economy','SQ','123','2014-11-09 00:00:00'),('298',14,'Economy','SQ','123','2014-11-09 00:00:00'),('297',15,'Economy','SQ','123','2014-11-09 00:00:00'),('296',17,'Economy','SQ','123','2014-11-09 00:00:00'),('32',19,'Business','SQ','880','2014-11-09 01:00:00'),('33',19,'Business','SQ','880','2014-11-09 01:00:00'),('34',19,'Business','SQ','880','2014-11-09 01:00:00'),('35',19,'Business','SQ','880','2014-11-09 01:00:00');
 /*!40000 ALTER TABLE `seatsbooking` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -667,4 +667,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-11-06 13:20:04
+-- Dump completed on 2014-11-07  2:10:15
