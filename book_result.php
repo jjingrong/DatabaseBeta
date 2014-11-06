@@ -75,17 +75,21 @@
 		$name3 = htmlspecialchars($_POST['name3']);
 		$passport3 = htmlspecialchars($_POST['passport3']);
 		$dob3 = htmlspecialchars($_POST['dob3']);
+		$query 	= "CALL cs2102.MakeBookingForThree('".$IATACode."','".$FlightNo."','".$DepartureTime."','".$class."','".$phone."','".$email."','".$passport1."','".$name1."','".$dob1."','".$passport2."','".$name2."','".$dob2."','".$passport3."','".$name3."','".$dob3."');";
+
 	}
 	if($numpax > 3)
 	{
 		$name4 = htmlspecialchars($_POST['name4']);
 		$passport4 = htmlspecialchars($_POST['passport4']);
 		$dob4 = htmlspecialchars($_POST['dob4']);
+		$query 	= "CALL cs2102.MakeBookingForFour('".$IATACode."','".$FlightNo."','".$DepartureTime."','".$class."','".$phone."','".$email."','".$passport1."','".$name1."','".$dob1."','".$passport2."','".$name2."','".$dob2."','".$passport3."','".$name3."','".$dob3."','".$passport4."','".$name4."','".$dob4."');";
 	}
-	else
+	if($numpax == 1)
 	{
-		$query 	= "CALL cs2102.MakeBooking('".$IATACode."','".$FlightNo."','".$DepartureTime."','".$class."','".$phone."','".$email."','".$passport1."','".$name1."','".$dob1."'	);";
+		$query 	= "CALL cs2102.MakeBooking('".$IATACode."','".$FlightNo."','".$DepartureTime."','".$class."','".$phone."','".$email."','".$passport1."','".$name1."','".$dob1."');";
 	}
+	echo $query;
 	include_once 'dbConnection.php';
 	//$queryResult = mysql_query("CALL cs2102.SearchFlights('Singapore','Hong Kong','2014-11-09','Economy');");
 	$queryResult = mysql_query($query);

@@ -4,7 +4,7 @@ USE `cs2102`;
 --
 -- Host: 127.0.0.1    Database: cs2102
 -- ------------------------------------------------------
--- Server version	5.5.40
+-- Server version 5.5.40
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -26,7 +26,7 @@ DROP TABLE IF EXISTS `accompanied_booking`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `accompanied_booking` (
   `PassportNumber` varchar(25) NOT NULL DEFAULT '',
-  `ReferenceNo` int(25) NOT NULL,
+  `ReferenceNo` int(11) NOT NULL,
   PRIMARY KEY (`PassportNumber`,`ReferenceNo`),
   KEY `ReferenceNo` (`ReferenceNo`),
   CONSTRAINT `accompanied_booking_ibfk_1` FOREIGN KEY (`PassportNumber`) REFERENCES `passenger` (`PassportNumber`),
@@ -40,7 +40,7 @@ CREATE TABLE `accompanied_booking` (
 
 LOCK TABLES `accompanied_booking` WRITE;
 /*!40000 ALTER TABLE `accompanied_booking` DISABLE KEYS */;
-INSERT INTO `accompanied_booking` VALUES ('E1234568','1');
+INSERT INTO `accompanied_booking` VALUES ('E1234568',1),('EP10001',13),('E0000PR',18);
 /*!40000 ALTER TABLE `accompanied_booking` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -108,7 +108,7 @@ CREATE TABLE `booking` (
   PRIMARY KEY (`ReferenceNo`),
   KEY `fk_PassportNumber` (`PassportNumber`),
   CONSTRAINT `fk_PassportNumber` FOREIGN KEY (`PassportNumber`) REFERENCES `passenger` (`PassportNumber`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -117,7 +117,7 @@ CREATE TABLE `booking` (
 
 LOCK TABLES `booking` WRITE;
 /*!40000 ALTER TABLE `booking` DISABLE KEYS */;
-INSERT INTO `booking` VALUES ('1','91234567','hello@goodbye.com','E1234567');
+INSERT INTO `booking` VALUES (1,'91234567','hello@goodbye.com','E1234567'),(6,'12345','email@mail.com','EP10001'),(7,'12345','email@mail.com','EP10001'),(8,'12345','email@mail.com','EP10002'),(9,'6123 6780','email2@mail.com','EP10002'),(10,'6123 6780','email2@mail.com','EP10002'),(11,'6123 6780','email2@mail.com','EP10002'),(12,'6123 6780','email2@mail.com','EP10002'),(13,'6123 6780','email2@mail.com','EP10002'),(14,'90034942','rey@nus.edu.sg','E0000PR'),(15,'90034942','rey@nus.edu.sg','E0000PR'),(17,'91234567','asdf@asdasd.das','E111111E'),(18,'91234567','asdf@asdasd.das','E111111E');
 /*!40000 ALTER TABLE `booking` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -192,7 +192,7 @@ CREATE TABLE `passenger` (
 
 LOCK TABLES `passenger` WRITE;
 /*!40000 ALTER TABLE `passenger` DISABLE KEYS */;
-INSERT INTO `passenger` VALUES ('E1234567','John Tan','1989-12-30 16:00:00'),('E1234568','Jane Tan','1990-12-29 16:00:00');
+INSERT INTO `passenger` VALUES ('E0000PR','Rey Neo','1991-08-22 16:00:00'),('E111111E','Tan Gu Gu','1989-12-31 16:00:00'),('E1234567','John Tan','1989-12-30 16:00:00'),('E1234568','Jane Tan','1990-12-29 16:00:00'),('EP10001','Tan Ah Kow','1979-12-31 16:00:00'),('EP10002','Tan Ah Meow','1974-12-31 16:00:00');
 /*!40000 ALTER TABLE `passenger` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -223,7 +223,7 @@ CREATE TABLE `seatsbooking` (
 
 LOCK TABLES `seatsbooking` WRITE;
 /*!40000 ALTER TABLE `seatsbooking` DISABLE KEYS */;
-INSERT INTO `seatsbooking` VALUES ('179','1','Economy','3K','555','2014-11-08 16:00:00'),('180','1','Economy','3K','555','2014-11-08 16:00:00');
+INSERT INTO `seatsbooking` VALUES ('178',1,'Economy','3K','555','2014-11-08 16:00:00'),('179',1,'Economy','3K','555','2014-11-08 16:00:00'),('180',1,'Economy','3K','555','2014-11-08 16:00:00'),('177',7,'Economy','3K','555','2014-11-08 16:00:00'),('176',8,'Economy','3K','555','2014-11-08 16:00:00'),('299',13,'Economy','SQ','123','2014-11-09 00:00:00'),('300',13,'Economy','SQ','123','2014-11-09 00:00:00'),('298',14,'Economy','SQ','123','2014-11-09 00:00:00'),('297',15,'Economy','SQ','123','2014-11-09 00:00:00'),('296',17,'Economy','SQ','123','2014-11-09 00:00:00'),('294',18,'Economy','SQ','123','2014-11-09 00:00:00'),('295',18,'Economy','SQ','123','2014-11-09 00:00:00');
 /*!40000 ALTER TABLE `seatsbooking` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -288,20 +288,211 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `GetEmptySeats`(IN IATACODE_PARAM CHAR(10), IN FlightNo_PARAM VARCHAR(10), IN DepartureTime_PARAM Timestamp, IN ClassType_PARAM VARCHAR(10))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetEmptySeats`(IN IATACODE_PARAM CHAR(10), IN FlightNo_PARAM VARCHAR(10), IN DepartureTime_PARAM Timestamp, IN ClassType_PARAM VARCHAR(10), OUT EmptySeats int)
 BEGIN
- SELECT st.seatCount - COUNT(*) as EmptySeats
- FROM SeatsBooking sb INNER JOIN seatstype st
- WHERE sb.IATACODE = IATACODE_PARAM
- AND st.IATACODE = IATACODE_PARAM
- AND st.FlightNo = FlightNo_PARAM
- AND sb.FlightNo = FlightNo_PARAM
- AND st.DepartureTime = DepartureTime_PARAM
- AND sb.DepartureTime = DepartureTime_PARAM
- AND st.classType = ClassType_PARAM
- AND sb.classType = ClassType_PARAM
- GROUP BY st.seatCount;
+ SET EmptySeats=
+ (SELECT seatCount
+ FROM seatstype
+ WHERE IATACODE = IATACODE_PARAM
+ AND FlightNo = FlightNo_PARAM             
+ AND DepartureTime = DepartureTime_PARAM
+ AND classType = ClassType_PARAM
+ GROUP BY seatCount);
+ 
+ SET EmptySeats= EmptySeats -
+ (SELECT count(*)
+ FROM seatsBooking
+ WHERE IATACODE = IATACODE_PARAM
+ AND FlightNo = FlightNo_PARAM
+ AND DepartureTime = DepartureTime_PARAM
+ AND classType = ClassType_PARAM);
  END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `MakeBooking` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `MakeBooking`(IATACODE_PARAM varchar(10), 
+FlightNo_PARAM VARCHAR(10), DepartureTime_PARAM TIMESTAMP, ClassType_PARAM VARCHAR(10), 
+CNUM_PARAM varchar(25), CEMAIL_PARAM varchar(25), PN_PARAM varchar(25), NAME_PARAM varchar(25), 
+DOB_PARAM TIMESTAMP)
+BEGIN
+DECLARE seatNumber int(11) default 0;
+DECLARE referenceNum int(11) default 0;
+
+#Check / Create Pax tuples
+CALL NewPassenger(PN_PARAM, NAME_PARAM, DOB_PARAM);
+
+#Create new Booking
+INSERT INTO booking(`ContactNum`,`ContactEmail`,`PassportNumber`) VALUES (CNUM_PARAM, CEMAIL_PARAM, PN_PARAM);
+SET referenceNum = LAST_INSERT_ID();
+
+#Add to seat Booking
+CALL GetEmptySeats(IATACODE_PARAM,FlightNo_PARAM,DepartureTime_PARAM,ClassType_PARAM, seatNumber);
+INSERT INTO seatsbooking(`seatNo`,`ReferenceNo`,`classType`,`IATACode`,`FlightNo`,`DepartureTime`) Values (seatNumber, referenceNum, ClassType_PARAM, IATACODE_PARAM, FlightNo_PARAM, DepartureTime_PARAM);
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `MakeBookingForFour` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `MakeBookingForFour`(IATACODE_PARAM varchar(10), 
+FlightNo_PARAM VARCHAR(10), DepartureTime_PARAM TIMESTAMP, ClassType_PARAM VARCHAR(10), 
+CNUM_PARAM varchar(25), CEMAIL_PARAM varchar(25), PN_PARAM varchar(25), NAME_PARAM varchar(25), DOB_PARAM TIMESTAMP, 
+PN_PARAM2 varchar(25), NAME_PARAM2 varchar(25), DOB_PARAM2 TIMESTAMP,
+PN_PARAM3 varchar(25), NAME_PARAM3 varchar(25), DOB_PARAM3 TIMESTAMP,
+PN_PARAM4 varchar(25), NAME_PARAM4 varchar(25), DOB_PARAM4 TIMESTAMP)
+BEGIN
+DECLARE seatNumber int(11) default 0;
+DECLARE referenceNum int(11) default 0;
+
+#Check / Create Pax tuples
+CALL NewPassenger(PN_PARAM, NAME_PARAM, DOB_PARAM);
+CALL NewPassenger(PN_PARAM2, NAME_PARAM2, DOB_PARAM2);
+CALL NewPassenger(PN_PARAM3, NAME_PARAM3, DOB_PARAM3);
+CALL NewPassenger(PN_PARAM4, NAME_PARAM4, DOB_PARAM4);
+
+#Create new Booking
+INSERT INTO booking(`ContactNum`,`ContactEmail`,`PassportNumber`) VALUES (CNUM_PARAM, CEMAIL_PARAM, PN_PARAM);
+SET referenceNum = LAST_INSERT_ID();
+
+#Person 1
+#Add to seat Booking
+CALL GetEmptySeats(IATACODE_PARAM,FlightNo_PARAM,DepartureTime_PARAM,ClassType_PARAM, seatNumber);
+INSERT INTO seatsbooking(`seatNo`,`ReferenceNo`,`classType`,`IATACode`,`FlightNo`,`DepartureTime`) Values (seatNumber, referenceNum, ClassType_PARAM, IATACODE_PARAM, FlightNo_PARAM, DepartureTime_PARAM);
+
+#Person 2
+#Add to seat Booking & accompany table
+CALL GetEmptySeats(IATACODE_PARAM,FlightNo_PARAM,DepartureTime_PARAM,ClassType_PARAM, seatNumber);
+INSERT INTO seatsbooking(`seatNo`,`ReferenceNo`,`classType`,`IATACode`,`FlightNo`,`DepartureTime`) Values (seatNumber, referenceNum, ClassType_PARAM, IATACODE_PARAM, FlightNo_PARAM, DepartureTime_PARAM);
+INSERT INTO accompanied_booking(`PassportNumber`,`ReferenceNo`) values (PN_PARAM2, referenceNum);
+
+#Person 3
+#Add to seat Booking & accompany table
+CALL GetEmptySeats(IATACODE_PARAM,FlightNo_PARAM,DepartureTime_PARAM,ClassType_PARAM, seatNumber);
+INSERT INTO seatsbooking(`seatNo`,`ReferenceNo`,`classType`,`IATACode`,`FlightNo`,`DepartureTime`) Values (seatNumber, referenceNum, ClassType_PARAM, IATACODE_PARAM, FlightNo_PARAM, DepartureTime_PARAM);
+INSERT INTO accompanied_booking(`PassportNumber`,`ReferenceNo`) values (PN_PARAM3, referenceNum);
+
+#Person 4
+#Add to seat Booking & accompany table
+CALL GetEmptySeats(IATACODE_PARAM,FlightNo_PARAM,DepartureTime_PARAM,ClassType_PARAM, seatNumber);
+INSERT INTO seatsbooking(`seatNo`,`ReferenceNo`,`classType`,`IATACode`,`FlightNo`,`DepartureTime`) Values (seatNumber, referenceNum, ClassType_PARAM, IATACODE_PARAM, FlightNo_PARAM, DepartureTime_PARAM);
+INSERT INTO accompanied_booking(`PassportNumber`,`ReferenceNo`) values (PN_PARAM4, referenceNum);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `MakeBookingForThree` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `MakeBookingForThree`(IATACODE_PARAM varchar(10), 
+FlightNo_PARAM VARCHAR(10), DepartureTime_PARAM TIMESTAMP, ClassType_PARAM VARCHAR(10), 
+CNUM_PARAM varchar(25), CEMAIL_PARAM varchar(25), PN_PARAM varchar(25), NAME_PARAM varchar(25), DOB_PARAM TIMESTAMP, 
+PN_PARAM2 varchar(25), NAME_PARAM2 varchar(25), DOB_PARAM2 TIMESTAMP,
+PN_PARAM3 varchar(25), NAME_PARAM3 varchar(25), DOB_PARAM3 TIMESTAMP)
+BEGIN
+DECLARE seatNumber int(11) default 0;
+DECLARE referenceNum int(11) default 0;
+
+#Check / Create Pax tuples
+CALL NewPassenger(PN_PARAM, NAME_PARAM, DOB_PARAM);
+CALL NewPassenger(PN_PARAM2, NAME_PARAM2, DOB_PARAM2);
+CALL NewPassenger(PN_PARAM3, NAME_PARAM3, DOB_PARAM3);
+
+#Create new Booking
+INSERT INTO booking(`ContactNum`,`ContactEmail`,`PassportNumber`) VALUES (CNUM_PARAM, CEMAIL_PARAM, PN_PARAM);
+SET referenceNum = LAST_INSERT_ID();
+
+#Person 1
+#Add to seat Booking
+CALL GetEmptySeats(IATACODE_PARAM,FlightNo_PARAM,DepartureTime_PARAM,ClassType_PARAM, seatNumber);
+INSERT INTO seatsbooking(`seatNo`,`ReferenceNo`,`classType`,`IATACode`,`FlightNo`,`DepartureTime`) Values (seatNumber, referenceNum, ClassType_PARAM, IATACODE_PARAM, FlightNo_PARAM, DepartureTime_PARAM);
+
+#Person 2
+#Add to seat Booking & accompany table
+CALL GetEmptySeats(IATACODE_PARAM,FlightNo_PARAM,DepartureTime_PARAM,ClassType_PARAM, seatNumber);
+INSERT INTO seatsbooking(`seatNo`,`ReferenceNo`,`classType`,`IATACode`,`FlightNo`,`DepartureTime`) Values (seatNumber, referenceNum, ClassType_PARAM, IATACODE_PARAM, FlightNo_PARAM, DepartureTime_PARAM);
+INSERT INTO accompanied_booking(`PassportNumber`,`ReferenceNo`) values (PN_PARAM2, referenceNum);
+
+#Person 3
+#Add to seat Booking & accompany table
+CALL GetEmptySeats(IATACODE_PARAM,FlightNo_PARAM,DepartureTime_PARAM,ClassType_PARAM, seatNumber);
+INSERT INTO seatsbooking(`seatNo`,`ReferenceNo`,`classType`,`IATACode`,`FlightNo`,`DepartureTime`) Values (seatNumber, referenceNum, ClassType_PARAM, IATACODE_PARAM, FlightNo_PARAM, DepartureTime_PARAM);
+INSERT INTO accompanied_booking(`PassportNumber`,`ReferenceNo`) values (PN_PARAM3, referenceNum);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `MakeBookingForTwo` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `MakeBookingForTwo`(IATACODE_PARAM varchar(10), 
+FlightNo_PARAM VARCHAR(10), DepartureTime_PARAM TIMESTAMP, ClassType_PARAM VARCHAR(10), 
+CNUM_PARAM varchar(25), CEMAIL_PARAM varchar(25), PN_PARAM varchar(25), NAME_PARAM varchar(25), 
+DOB_PARAM TIMESTAMP, PN_PARAM2 varchar(25), NAME_PARAM2 varchar(25), 
+DOB_PARAM2 TIMESTAMP)
+BEGIN
+DECLARE seatNumber int(11) default 0;
+DECLARE referenceNum int(11) default 0;
+
+#Check / Create Pax tuples
+CALL NewPassenger(PN_PARAM, NAME_PARAM, DOB_PARAM);
+CALL NewPassenger(PN_PARAM2, NAME_PARAM2, DOB_PARAM2);
+
+#Create new Booking
+INSERT INTO booking(`ContactNum`,`ContactEmail`,`PassportNumber`) VALUES (CNUM_PARAM, CEMAIL_PARAM, PN_PARAM);
+SET referenceNum = LAST_INSERT_ID();
+
+#Person 1
+#Add to seat Booking
+CALL GetEmptySeats(IATACODE_PARAM,FlightNo_PARAM,DepartureTime_PARAM,ClassType_PARAM, seatNumber);
+INSERT INTO seatsbooking(`seatNo`,`ReferenceNo`,`classType`,`IATACode`,`FlightNo`,`DepartureTime`) Values (seatNumber, referenceNum, ClassType_PARAM, IATACODE_PARAM, FlightNo_PARAM, DepartureTime_PARAM);
+
+#Person 2
+#Add to seat Booking & accompany table
+CALL GetEmptySeats(IATACODE_PARAM,FlightNo_PARAM,DepartureTime_PARAM,ClassType_PARAM, seatNumber);
+INSERT INTO seatsbooking(`seatNo`,`ReferenceNo`,`classType`,`IATACode`,`FlightNo`,`DepartureTime`) Values (seatNumber, referenceNum, ClassType_PARAM, IATACODE_PARAM, FlightNo_PARAM, DepartureTime_PARAM);
+INSERT INTO accompanied_booking(`PassportNumber`,`ReferenceNo`) values (PN_PARAM2, referenceNum);
+END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -476,4 +667,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-11-05 16:56:48
+-- Dump completed on 2014-11-06 13:20:04
