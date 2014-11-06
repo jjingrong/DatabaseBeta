@@ -111,7 +111,13 @@
 								<article>
 									<h2><?php echo $source?> to <?php echo $dest?> on <?php echo $date?></h2>
 									<!-- Table function -->
-									<p><h3>Please select your prefered flight. </h3></p>
+									<h3>Please select your prefered flight. </h3>
+									<h4>Sort By:  <form><select id="sortby" name="sortby" onchange="numPax()">
+															<option value="price">Lowest Price</option>
+															<option value="early">Earliest Flight Time</option>
+															<option value="late">Latest Flight Time</option>
+															<option value="name">Airline Name</option>
+														</select></form></h4>
 									<?php while ($row = mysql_fetch_assoc($queryResult)) {
 									echo "<div class='flightbkg'>";
 									echo	"<div class='row quarter'>";

@@ -89,7 +89,7 @@
 	{
 		$query 	= "CALL cs2102.MakeBooking('".$IATACode."','".$FlightNo."','".$DepartureTime."','".$class."','".$phone."','".$email."','".$passport1."','".$name1."','".$dob1."');";
 	}
-	echo $query;
+	//echo $query;
 	include_once 'dbConnection.php';
 	//$queryResult = mysql_query("CALL cs2102.SearchFlights('Singapore','Hong Kong','2014-11-09','Economy');");
 	$queryResult = mysql_query($query);
