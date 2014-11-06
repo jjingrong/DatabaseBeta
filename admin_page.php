@@ -82,7 +82,7 @@
 	}
 	$html_table .= "</table>";
 
-	$flights_query = "SELECT * FROM flight";
+	$flights_query = "SELECT * FROM flight WHERE DepartureTime >= NOW() ORDER BY DepartureTime ASC";
 
 	$result = mysql_query($flights_query);
 
@@ -94,7 +94,7 @@
 
 	$html_table1 = "<table border='1' cellspacing='5' cellpadding='8' style='border-collapse:collapse'>"; 
 
-	$html_table1 .= "<tr><td>IATACode</td><td>Flight No.</td><td>Departure Time</td><td>Arrival Time</td><td> Source </td><td> Destination </td><td>Update</td><td>Delete</td></tr>";
+	$html_table1 .= "<tr><td>IATACode</td><td>Flight No.</td><td>Departure Time</td><td>Arrival Time</td><td> Source </td><td> Destination </td><td>View Passengers</td><td>Update</td><td>Delete</td></tr>";
 
 	while ($row = mysql_fetch_assoc($result)) {
 		$html_table1 .= "<tr>";
@@ -105,6 +105,28 @@
 		$html_table1 .= "<td>" . $row["source"] . "</td>";
 		$html_table1 .= "<td>" . $row["destination"] . "</td>";
 		
+		// create instance of HTML_Form
+		$ViewFrm = new HTML_Form();
+
+		// using $frmStr to concatenate long string of form elements
+		// startForm arguments: action, method, id, optional attributes added in associative array
+		$ViewStr = $ViewFrm->startForm('admin_viewFlightPassenger.php?view=1', 'post', 'editForm', array('class'=>'editForm')) . PHP_EOL .
+
+    	$ViewFrm->addInput('hidden', 'IATACode', $row["IATACode"], array('id'=>'IATACode') ) .
+    	$ViewFrm->addInput('hidden', 'FlightNo', $row["FlightNo"], array('id'=>'FlightNo') ) .
+    	$ViewFrm->addInput('hidden', 'DepartureTime', $row["DepartureTime"], array('id'=>'DepartureTime') ) .
+    	$ViewFrm->addInput('hidden', 'ArrivalTime', $row["ArrivalTime"], array('id'=>'ArrivalTime') ) .
+    	$ViewFrm->addInput('hidden', 'source', $row["source"], array('id'=>'source') ) .
+    	$ViewFrm->addInput('hidden', 'destination', $row["destination"], array('id'=>'destination') ) .
+
+	    $ViewFrm->startTag('p') . 
+	    $ViewFrm->addInput('submit', 'submit', 'View') . 
+	    $ViewFrm->endTag() . PHP_EOL .
+
+        $ViewFrm->endForm();
+
+        $html_table1 .= "<td>" . $ViewStr . "</td>";
+
 		// create instance of HTML_Form
 		$flightFrm = new HTML_Form();
 
@@ -185,14 +207,16 @@
 						</div>
 						<div class="12u skel-cell-important">
 							<div id="content">
-								<?php echo $welcome_msg . "</br>"; ?>
+								<h1><?php echo $welcome_msg . "</br>"; ?></h1>
+								<a href="admin_newFlight.php" style="float:left; display:block; margin: 0px 10px 5px 0px; background:#ccc; text-decoration:none; color:#fff; padding: 10px; width:14%; color:#fff; border-radius:5px;"><b>Add A New Flight</b></a>
+								<a href="admin_manageAdmin.php" style="float:left; display:block; margin: 0px 10px 5px 0px; background:#ccc; text-decoration:none; padding: 10px; width:16%; color:#fff; border-radius:5px;"><b>Admin Management</b></a>
+								<a href="admin_bookingManagement.php" style="float:left; display:block; margin: 0px 10px 5px 0px; background:#ccc; text-decoration:none; padding: 10px; width:20%; color:#fff; border-radius:5px;"><b>Booking Management</b></a><br>
+								<br>
 								<!-- Content -->
 								<h1>Flight Seats Details</h1>
 								<?php echo $html_table; ?>
-								<h1>Flights Available</h1>
+								<b>FLIGHTS AVAILABLE</b> 
 								<?php echo $html_table1; ?>
-								<a href="admin_newFlight.php">New Flight</a>
-
 								</div>
 							</div>
 						</div>

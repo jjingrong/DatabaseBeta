@@ -26,7 +26,7 @@ DROP TABLE IF EXISTS `accompanied_booking`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `accompanied_booking` (
   `PassportNumber` varchar(25) NOT NULL DEFAULT '',
-  `ReferenceNo` int(11) NOT NULL,
+  `ReferenceNo` int(25) NOT NULL,
   PRIMARY KEY (`PassportNumber`,`ReferenceNo`),
   KEY `ReferenceNo` (`ReferenceNo`),
   CONSTRAINT `accompanied_booking_ibfk_1` FOREIGN KEY (`PassportNumber`) REFERENCES `passenger` (`PassportNumber`),
@@ -107,7 +107,7 @@ CREATE TABLE `booking` (
   `PassportNumber` varchar(25) NOT NULL,
   PRIMARY KEY (`ReferenceNo`),
   KEY `fk_PassportNumber` (`PassportNumber`),
-  CONSTRAINT `fk_PassportNumber` FOREIGN KEY (`PassportNumber`) REFERENCES `passenger` (`PassportNumber`)
+  CONSTRAINT `fk_PassportNumber` FOREIGN KEY (`PassportNumber`) REFERENCES `passenger` (`PassportNumber`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -131,10 +131,10 @@ DROP TABLE IF EXISTS `flight`;
 CREATE TABLE `flight` (
   `IATACode` char(10) NOT NULL DEFAULT '',
   `FlightNo` varchar(10) NOT NULL DEFAULT '',
-  `DepartureTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ,
-  `ArrivalTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `DepartureTime` timestamp NOT NULL,
+  `ArrivalTime` timestamp NOT NULL CHECK (`ArrivalTime` >= `DepartureTime`),
   `source` varchar(25) NOT NULL,
-  `destination` varchar(25) NOT NULL,
+  `destination` varchar(25) NOT NULL, 
   PRIMARY KEY (`IATACode`,`FlightNo`,`DepartureTime`),
   CONSTRAINT `flight_ibfk_1` FOREIGN KEY (`IATACode`) REFERENCES `airline` (`IATACode`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -209,7 +209,7 @@ CREATE TABLE `seatsbooking` (
   `classType` varchar(10) NOT NULL DEFAULT '',
   `IATACode` char(10) NOT NULL DEFAULT '',
   `FlightNo` varchar(10) NOT NULL DEFAULT '',
-  `DepartureTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `DepartureTime` timestamp NOT NULL ,
   PRIMARY KEY (`ReferenceNo`,`classType`,`IATACode`,`FlightNo`,`DepartureTime`,`seatNo`),
   KEY `IATACode` (`IATACode`,`FlightNo`,`DepartureTime`,`classType`),
   CONSTRAINT `seatsbooking_ibfk_1` FOREIGN KEY (`IATACode`, `FlightNo`, `DepartureTime`, `classType`) REFERENCES `seatstype` (`IATACode`, `FlightNo`, `DepartureTime`, `classType`),

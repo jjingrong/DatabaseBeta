@@ -4,24 +4,30 @@
 	session_start();
 	require('admin_config.php');
         $success = "";
+        $errMsg = "";
+
         if(ISSET($_REQUEST["change"])) {
             $IATACode = $_SESSION["IATACode"];
             $flightNo = $_SESSION["FlightNo"];
             $DepartureTime = $_SESSION["DepartureTime"];
             $ArrivalTime = $_REQUEST["ArrivalTime"];
-            $classType = $_SESSION["classType"];
             $source = $_REQUEST["source"];
             $destination = $_REQUEST["destination"];
             
-            $seatbooking_update = sprintf("UPDATE flight SET source = '%s', destination = '%s', ArrivalTime = '".$ArrivalTime. "' WHERE IATACode = '%s' AND FlightNo = '%s' AND DepartureTime = '".$DepartureTime."'", mysql_real_escape_string($source), mysql_real_escape_string($destination), mysql_real_escape_string($IATACode), mysql_real_escape_string($flightNo));
-           
-            $result = mysql_query($seatbooking_update, $link);
-            if(!$result) {
-                $message  = 'Invalid query: ' . mysql_error() . "\n";
-                $message .= 'Whole query: ' . $seatbooking_update;
-                die($message);
+            $date = strtotime($ArrivalTime);
+            $date2 = strtotime($DepartureTime);
+
+            if(!($date === false) && $date > $date2) {
+                $seatbooking_update = sprintf("UPDATE flight SET DepartureTime = '". $DepartureTime . "', source = '%s', destination = '%s', ArrivalTime = '".$ArrivalTime. "' WHERE IATACode = '%s' AND FlightNo = '%s' AND DepartureTime = '".$DepartureTime."'", mysql_real_escape_string($source), mysql_real_escape_string($destination), mysql_real_escape_string($IATACode), mysql_real_escape_string($flightNo));
+                $result = mysql_query($seatbooking_update, $link);
+                if(!$result) {
+                    $errMsg = "Edit Fails Please contact the adminstrator.";
+                } else 
+                    $success = "The updated has been successful. Please click on the link to view the changes made <a href='admin_page.php'>Back</a>";
+            }else {
+                $errMsg = "Edit Fails Please contact the adminstrator.";
             }
-            $success = "The updated has been successful. Please click on the link to view the changes made <a href='http://localhost/DatabaseBeta/admin_page.php'>Back</a>";
+
         } else {
             $_SESSION["IATACode"] = $_REQUEST["IATACode"];
             $_SESSION["FlightNo"] = $_REQUEST["FlightNo"];
@@ -135,8 +141,10 @@
 
                                         // finally, output the long string
                                         echo $frmStr;
+                                        echo $errMsg;
                                         echo $success;
                                     ?>
+                                    <a href='admin_page.php' style="float:left; display:block; margin: 0px 10px 5px 0px; background:#ccc; text-decoration:none; color:#fff; padding: 10px; width:14%; color:#fff; border-radius:5px;">Back to Admin Page.</a>
 
                             </div>
                         </div>
