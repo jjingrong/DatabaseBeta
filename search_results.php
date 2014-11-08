@@ -41,6 +41,20 @@
 	$date 	= htmlspecialchars($_POST['date']);
 	$class 	= htmlspecialchars($_POST['class']);
 	$query 	= "CALL cs2102.SearchFlights('".$source."','".$dest."','".$date."','".$class."');";
+	$curSort = 'none';
+	if(isset($_POST['SortBy']) && $_POST['SortBy']!='none') {
+		if($_POST['SortBy'] == 'price') {
+			$query = "CALL cs2102.SearchFlightsSorted('".$source."','".$dest."','".$date."','".$class."','price', 'A');";
+		} else if($_POST['SortBy'] == 'name') {
+			$query = "CALL cs2102.SearchFlightsSorted('".$source."','".$dest."','".$date."','".$class."','name', 'D');";
+		} else if($_POST['SortBy'] == 'early') {
+			$query = "CALL cs2102.SearchFlightsSorted('".$source."','".$dest."','".$date."','".$class."','DepartureTime', 'A');";
+			echo $query;
+		} else if($_POST['SortBy'] == 'late') {
+			$query = "CALL cs2102.SearchFlightsSorted('".$source."','".$dest."','".$date."','".$class."','DepartureTime', 'D');";
+		}
+		$curSort=$_POST['SortBy'];
+	} 
 	include_once 'dbConnection.php';
 	//$queryResult = mysql_query("CALL SearchFlights(".$source.",".$dest.",".$date.",".$class.")");
 	//$queryResult = mysql_query("CALL cs2102.SearchFlights('Singapore','Hong Kong','2014-11-09','Economy');");
@@ -57,6 +71,14 @@
 	{
 		document.body.innerHTML += '<form id="dynForm" action="book.php" method="post"><input type="hidden" name="IATACode" value="'+$IATACode+'"><input type="hidden" name="FlightNo" value="'+$FlightNo+'"><input type="hidden" name="DepartureTime" value="'+$DepartureTime+'"><input type="hidden" name="ArrivalTime" value="'+$ArrivalTime+'"><input type="hidden" name="name" value="'+$name+'"><input type="hidden" name="price" value="'+$price+'">'+<?php echo $passData?>+'</form>';
 		document.getElementById("dynForm").submit();
+	}
+    function sort()
+	{
+		$sortby = document.getElementById("sortby").value;
+		if($sortby != '<?php echo $curSort; ?>') {
+			document.body.innerHTML += '<form id="sForm" action="" method="post"><input type="hidden" name="SortBy" value="'+$sortby+'">'+<?php echo $passData?>+'</form>';
+			document.getElementById("sForm").submit();
+		}
 	}
 	</script>
 	<!-- Main Wrapper -->
@@ -76,16 +98,16 @@
 									<form action="search_results.php" method="post">
 										<table id="dataTable" border="5" width="100%" cellspacing="0" cellpadding="5">
 											<tr>
-												<input type="text" autocomplete="off" spellcheck="false" name="source" id="source" placeholder="From"/>
+												<input type="text" autocomplete="off" spellcheck="false" name="source" id="source" placeholder="From" value="<?php echo $source ?>"/>
 											</tr>
 											<tr>
-												<input type="text" name="destination" id="destination" name="source" id="source" placeholder="Destination"  />
+												<input type="text" name="destination" id="destination" name="source" id="source" placeholder="Destination" value="<?php echo $dest ?>" />
 											</tr>
 											<tr>
-												<input type="date" name="date" id="date" placeholder="date"/>
+												<input type="date" name="date" id="date" placeholder="date" value="<?php echo $date ?>"/>
 											</tr>
 											<tr>
-												<select name="class">
+												<select name="class" value="<?php echo $class ?>">
 													<option value="Economy">Economy Class</option>
 													<option value="Business">Business Class</option>
 													<option value="First">First Class</option>
@@ -112,7 +134,8 @@
 									<h2><?php echo $source?> to <?php echo $dest?> on <?php echo $date?></h2>
 									<!-- Table function -->
 									<h3>Please select your prefered flight. </h3>
-									<h4>Sort By:  <form><select id="sortby" name="sortby" onchange="numPax()">
+									<h4>Sort By:  <form><select id="sortby" name="sortby" onchange="sort()">
+															<option value="none">None</option>
 															<option value="price">Lowest Price</option>
 															<option value="early">Earliest Flight Time</option>
 															<option value="late">Latest Flight Time</option>
@@ -142,7 +165,7 @@
 			</div>
 
 		</div>
-
+		<script type="text/javascript">document.getElementById("sortby").value = '<?php echo $curSort; ?>';</script>
 		<?php include_once 'footer.php' ?>	
 
 	</body>
