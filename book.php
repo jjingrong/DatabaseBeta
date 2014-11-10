@@ -11,34 +11,7 @@
 
 <script>
     
-	function numPax()
-	{
-		var nPax = document.getElementById('numpax').value;
-		switch(nPax){
-		case "4":
-			document.getElementById('pax2').style.display="block";
-			document.getElementById('pax3').style.display="block";
-			document.getElementById('pax4').style.display="block";
-			break;
-		case "3":
-			document.getElementById('pax2').style.display="block";
-			document.getElementById('pax3').style.display="block";
-			document.getElementById('pax4').style.display="none";
-			break;
-		case "2":
-			document.getElementById('pax2').style.display="block";
-			document.getElementById('pax3').style.display="none";
-			document.getElementById('pax4').style.display="none";
-			break;
-		case "1":
-			document.getElementById('pax2').style.display="none";
-			document.getElementById('pax3').style.display="none";
-			document.getElementById('pax4').style.display="none";
-			//document.getElementById('pax1').style.display="block";
-			break;
-		}
-			return;
-	}
+	
 </script>
 
 <body class="left-sidebar">
@@ -56,11 +29,20 @@
 	$dest 	= htmlspecialchars($_POST['destination']);
 	$date 	= htmlspecialchars($_POST['date']);
 	$class 	= htmlspecialchars($_POST['class']);
-	$query 	= "CALL cs2102.GetEmptySeats('".$IATACode."','".$FlightNo."','".$DepartureTime."','".$class."');";
+	$seatCount = "0";
+
+	//CHECKS FOR EMPTY SEAT COUNT
+	$query 	= "CALL cs2102.GetEmptySeats('".$IATACode."','".$FlightNo."','".$DepartureTime."','".$class."',@seatCount);";
 	include_once 'dbConnection.php';
 	//$queryResult = mysql_query("CALL cs2102.SearchFlights('Singapore','Hong Kong','2014-11-09','Economy');");
-	//$queryResult = mysql_query($query);
-	//todo: check against empty seats
+	$queryResult = mysql_query($query);
+
+	$query = "SELECT @seatCount as seatCount;";
+	$queryResult = mysql_query($query);
+	while($row = mysql_fetch_assoc($queryResult)){
+		$seatCount = $row["seatCount"];
+	}
+	//echo $seatCount;
 
 	$passData = '\'<input type="hidden" name="source" value="'.$source.'">';
 	$passData .= '<input type="hidden" name="destination" value="'.$dest.'">';
@@ -119,7 +101,7 @@
 								<article>
 									<h2><?php echo $source?> to <?php echo $dest?> on <?php echo $date?></h2>
 									<!-- Table function -->
-
+									<h4 id="noSeats" style="display:none">There are not enough seats! Remaining Seats: <?php echo $seatCount ?></h4>
 									<form id= "bookform" action="book_result.php" method="post">
 									<h3>Passenger Details </h3><br>Number of Passengers:<br>
 									<select id="numpax" name="numpax" onchange="numPax()" form="bookform">
@@ -215,6 +197,57 @@
 		</div>
 		<script type="text/javascript">
 		document.getElementById('bookform').innerHTML += <?php echo $passData?>;
+		if(<?php echo $seatCount ?> <= 0)
+		{
+			document.getElementById('bookform').style.display="none";
+			document.getElementById('noSeats').style.display="block";
+		}
+		function numPax()
+		{
+			var nPax = document.getElementById('numpax').value;
+			switch(nPax){
+			case "4":
+				if(<?php echo $seatCount ?> < 4)
+				{
+					document.getElementById('noSeats').style.display="block";
+					break;
+				}
+				document.getElementById('pax2').style.display="block";
+				document.getElementById('pax3').style.display="block";
+				document.getElementById('pax4').style.display="block";
+				break;
+			case "3":
+				if(<?php echo $seatCount ?> < 3)
+				{
+					document.getElementById('noSeats').style.display="block";
+					break;
+				}
+				document.getElementById('noSeats').style.display="none";
+				document.getElementById('pax2').style.display="block";
+				document.getElementById('pax3').style.display="block";
+				document.getElementById('pax4').style.display="none";
+				break;
+			case "2":
+				if(<?php echo $seatCount ?> < 2)
+				{
+					document.getElementById('noSeats').style.display="block";
+					break;
+				}
+				document.getElementById('noSeats').style.display="none";
+				document.getElementById('pax2').style.display="block";
+				document.getElementById('pax3').style.display="none";
+				document.getElementById('pax4').style.display="none";
+				break;
+			case "1":
+				document.getElementById('noSeats').style.display="none";
+				document.getElementById('pax2').style.display="none";
+				document.getElementById('pax3').style.display="none";
+				document.getElementById('pax4').style.display="none";
+				//document.getElementById('pax1').style.display="block";
+				break;
+			}
+				return;
+		}
 		</script>
 		<?php include_once 'footer.php' ?>	
 
