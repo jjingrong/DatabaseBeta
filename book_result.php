@@ -101,6 +101,9 @@
 	else
 	{
 		$isError = false;
+		while ($row = mysql_fetch_assoc($queryResult)) {
+			$referenceNum = $row['ReferenceNo'];
+		}
 	}
 	?>
 	<!-- Main Wrapper -->
@@ -140,7 +143,7 @@
 
 								<article>
 									<div id='noerror' <?php if($isError){echo 'style="display:none"';} ?>>
-										<h2>Booking Confirmed!</h2>
+										<h2>Booking Confirmed! Reference Number: <?php echo $referenceNum ?></h2>
 										<!-- Table function -->
 										<h3> <?php echo $source?> to <?php echo $dest?> on <?php echo $date?></h3>
 										<div id='pax1'>

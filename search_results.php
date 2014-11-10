@@ -25,7 +25,7 @@
 
         $('#destination').typeahead({
         	source: function(query, process) {
-        		return ["Singapore","Ho Chi Minh City", "Hong Kong"];
+        		return ["Singapore","Ho Chi Minh City", "Hong Kong","Hanoi"];
         	}
         });
     })
@@ -46,10 +46,10 @@
 		if($_POST['SortBy'] == 'price') {
 			$query = "CALL cs2102.SearchFlightsSorted('".$source."','".$dest."','".$date."','".$class."','price', 'A');";
 		} else if($_POST['SortBy'] == 'name') {
-			$query = "CALL cs2102.SearchFlightsSorted('".$source."','".$dest."','".$date."','".$class."','name', 'D');";
+			$query = "CALL cs2102.SearchFlightsSorted('".$source."','".$dest."','".$date."','".$class."','name', 'A');";
 		} else if($_POST['SortBy'] == 'early') {
 			$query = "CALL cs2102.SearchFlightsSorted('".$source."','".$dest."','".$date."','".$class."','DepartureTime', 'A');";
-			echo $query;
+			//echo $query;
 		} else if($_POST['SortBy'] == 'late') {
 			$query = "CALL cs2102.SearchFlightsSorted('".$source."','".$dest."','".$date."','".$class."','DepartureTime', 'D');";
 		}

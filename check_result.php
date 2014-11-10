@@ -45,7 +45,7 @@
 				// create instance of HTML_Form
 				$editfrm = new HTML_Form();
 
-				$editFrmStr = $editfrm->startForm('admin_updateBookingDetail.php', 'post') . PHP_EOL .
+				$editFrmStr = $editfrm->startForm('updateBook.php', 'post') . PHP_EOL .
 
 		    	$editfrm->addInput('hidden', 'ReferenceNo', $row["ReferenceNo"], array('id'=>'ReferenceNo') ) .
 		    	$editfrm->addInput('hidden', 'name', $row["name"], array('id'=>'name') ) .
